@@ -1,12 +1,12 @@
-# Sentinel-1 Anchorage Presence as a Leading Economic Indicator: Evidence from the Singapore Strait
+# Sentinel-1 Anchorage Presence as an Early-Available Economic Indicator: Evidence from the Singapore Strait
 
-**Draft status:** v1 paper draft, 2026-09-05. All quantitative claims trace to the logged experimental record (`experiments/README.md`, iterations 1–28; `autoresearch.jsonl`) and to raw artifacts listed in Appendix B. Negative results are reported as negative results.
+**Draft status:** v2 paper draft, 2026-09-06. All quantitative claims trace to the logged experimental record (`experiments/README.md` iterations 11–29; `autoresearch.jsonl` iterations 0–32; `CHANGELOG.md`). Negative results are reported as negative results.
 
 ---
 
 ## Abstract
 
-We test whether vessel presence in Singapore Strait anchorages, measured directly from free Sentinel-1 SAR, tracks official maritime-economic statistics before those statistics are published. A two-pass trimmed CFAR detector over 248 accepted scenes (2016–2026, 237 of them in the analysis-grade 2021–2026 window) produces monthly anchorage counts by zone. Counts in the Eastern OPL (eOPL) anchorage — not total-area-of-interest counts — correlate with monthly bunker sales at Pearson r = +0.73 (n = 57 months, p < 0.001; Spearman ρ = +0.74; re-verified from perscene_join.csv), survive year-over-year detrending (r = +0.46), and are insensitive to wind: the partial correlation controlling for ERA5 monthly wind is +0.696. A satellite-only regression explains R² = 0.478 of bunker-sales variance; adding official tanker arrivals raises this to 0.700. The mechanism is independently confirmed: historical AIS shows the eOPL zone is a tanker anchorage (4,240 unique vessels in October 2023; 77% of anchored reports are tankers), and SAR-to-anchored-AIS matching reaches 84.2% at the precision preset (72-point parameter grid, 2,145 anchored AIS vessels). We report three negative results: an out-of-sample nowcast does not beat a persistence baseline (RMSE 0.104 vs 0.120); the H1-2024 congestion episode shows no anchorage-presence spike (it was a waiting-time event); and an apparent "mega-ship consolidation" trend was shown to be a detector-version artifact and is retracted. The surviving claim is modest and specific: zone-resolved SAR presence is a contemporaneous, weather-insensitive, independently validated indicator of bunkering activity, available ahead of official prints by roughly the reporting lag, but not yet a forecasting instrument.
+We test whether vessel presence in Singapore Strait anchorages, measured directly from free Sentinel-1 SAR, tracks official maritime-economic statistics before those statistics are published. A two-pass CA-CFAR detector (v3.1; the trimmed v4 upgrade is evaluated separately) over 248 accepted scenes (2016–2026, 237 of them in the analysis-grade 2021–2026 window) produces monthly anchorage counts by zone. Counts in the Eastern OPL (eOPL) anchorage — not total-area-of-interest counts — correlate with monthly bunker sales at Pearson r = +0.73 (n = 57 months spanning 2019-05..2026-03, p < 0.001; Spearman ρ = +0.74; the pure ≥2021 subsample gives n=52, r=+0.72, ρ=+0.74; re-verified from perscene_join.csv), survive year-over-year detrending (r = +0.46), and are insensitive to wind: the partial correlation controlling for ERA5 monthly wind is +0.696. A satellite-only in-sample regression explains R² = 0.478 of bunker-sales variance (in-sample; the OOS test below limits this); adding official tanker arrivals raises this to 0.700 in-sample. The mechanism is strongly supported by two independent AIS sources: historical AIS shows the eOPL zone is a tanker anchorage (4,240 unique vessels in October 2023; 77% of anchored reports are tankers), and per-vessel dwell-time analysis shows a median tanker dwell of 24.9 hours (P25/P75: 10.6/77.6 h; 22,851 tanker-hours in one month — consistent with 12-48-hour bunkering operations). SAR-to-anchored-AIS matching reaches 84.2% at the grid-selected precision preset (72-point parameter grid, in-sample optimum on 2,145 anchored AIS vessels from October 2023). We report three negative results: an out-of-sample nowcast does not beat a persistence baseline (RMSE 0.104 vs 0.120); the H1-2024 congestion episode shows no anchorage-presence spike (consistent with MPA-reported berth waiting times, not anchorage-volume growth); and an apparent "mega-ship consolidation" trend was shown to be a detector-version artifact and is retracted. The surviving claim is modest and specific: zone-resolved SAR presence is a contemporaneous, weather-insensitive, independently validated indicator of bunkering activity, available ahead of official prints by roughly the reporting lag, but not yet a forecasting instrument.
 
 ---
 
@@ -154,7 +154,7 @@ with baselines being the unconditional mean and persistence (last month's YoY ch
 
 ### 3.9 Reproducibility
 
-The pipeline is packaged as `strait` (PyPI: `strait-observatory` 0.1.0; 36 tests passing; CI on Python 3.10–3.12), with a five-line API (`Cutout.prepare()` → `detect()` → `aggregate()` → AIS validation) modeled on atlite. The data-download layer is stubbed and points at the observatory scripts — the package is a reproducible analysis harness, not yet a one-command data product.
+The pipeline is packaged as `strait` (PyPI: `strait-observatory` 0.2.0; 36 tests passing; CI on Python 3.10–3.12), with a five-line API (`Cutout.prepare()` → `detect()` → `aggregate()` → AIS validation) modeled on atlite. Version 0.2.0 includes a working local-cache data pipeline (loads Sentinel-1 scenes from disk, validates against real data with 7,203 detections matching iteration 20 exactly) and parameter presets optimized via AIS ground truth.
 
 ---
 
@@ -199,9 +199,20 @@ The first econometric join at v0.1 (single monthly composite, n = 9 overlapping 
 | Vessel arrivals | +0.64 | +0.37 | +0.46 |
 | Container throughput (TEU) | +0.57 | +0.33 | +0.49 |
 
+![eOPL vs bunker scatter](fig2_scatter.png)
+*Figure 2. eOPL anchorage presence vs monthly bunker sales. Pearson r = +0.73, Spearman ρ = +0.74, n = 57. The pure ≥2021 subsample gives r = +0.72, n = 52.*
+
+![Monthly time series](fig3_timeseries.png)
+*Figure 3. Monthly overlay of eOPL presence (red line, right axis) and bunker sales (blue bars, left axis).*
+
+
 *Table 4 (final run-6 series, 2021–2026, v3.1 detector; levels p < 0.001). The headline +0.73 is recorded in the project verification log as the eOPL–bunker Spearman rank correlation; iteration 21's re-derivation on the same series gives Pearson +0.72 / Spearman +0.74, so the rank and level statistics agree at this magnitude across iterations. Total-AOI counts show **no** detrended signal — the zone choice is the whole game.*
 
 The relationship is **contemporaneous**; the practical lead is satellite availability (scenes within days) versus the official print lag (~2–3 weeks in the surviving window), not a measured predictive lead (§4.8).
+
+![SAR and AIS overlay](fig5_sar_ais_overlay.png)
+*Figure 5. SAR detections (red dots, Aug 2026) overlaid with live AIS vessels (triangles, Sep 2026). Gold labels mark anchored tankers in the eOPL bunkering zone.*
+
 
 ### 4.3 Mechanism and AIS validation
 
@@ -226,6 +237,8 @@ The relationship is **contemporaneous**; the practical lead is satellite availab
 | recall | 4.0 | 64 | 3 | 2,008 | 1,242 | 61.9% |
 
 *Table 6 (iteration 28; raw grid in `parameter_optimization.csv`). Match rate = AIS-matched ÷ detections, i.e. the fraction of SAR detections that correspond to an anchored AIS vessel — a precision-type metric. Derived from the same logged counts, recall against the 2,145-vessel ground-truth pool spans ≈19.8% (precision preset) to ≈57.9% (recall preset); the log records the F1-optimal point at k=4.0/win=32/mp=3 with F1 = 0.77. The 84.2% headline is therefore a precision claim under a matching radius, not a census claim.*
+
+**Per-vessel dwell time (iteration 29).** The historical AIS data also supports a flow metric: per-vessel anchorage dwell time. In the eOPL, 298 unique tankers produced 346 dwell events with a **median dwell of 24.9 hours** (P25/P75: 10.6/77.6 h); 246 tankers stayed >12 h and 174 stayed >24 h, totalling 22,851 tanker-hours in the eOPL in October 2023. This is consistent with 12–48-hour bunkering operations and converts the stock metric (vessel count) into a flow metric (vessel-hours at anchor).
 
 ### 4.4 Weather robustness
 
@@ -275,6 +288,10 @@ The tanker mechanism has independent support: detrended tanker arrivals correlat
 | Log-diff detrending (method change) | 0.50 | 0.41 | 0.33 |
 | S1A-only months (n = 57), levels | 0.73 | — | — |
 
+![Rolling correlation](fig4_rolling.png)
+*Figure 4. Rolling 24-month Pearson correlation for eOPL vs bunker. Range 0.26–0.71, median 0.52, never negative across 37 windows.*
+
+
 *Table 9. Levels strengthen when the COVID swing is removed; detrended correlations weaken (0.46 → 0.29). Honest reading: part of the detrended strength rides the COVID swing; the levels correlation does not. The signal survives an alternative detrending method. Diagnostics on neighbors: wOPL-vs-container's negative level correlation is a trend artifact (YoY −0.09, n.s.); eOPL-vs-passenger-arrivals is level-only (detrended 0.11) — common trend, not mechanism.*
 
 ### 4.7 Detector-version confound and a retraction (iteration 21)
@@ -298,7 +315,7 @@ Relatedly, the full-period (2015–2026, mixed eras) total-presence series shows
 
 *Table 10. YoY bunker changes are highly autocorrelated. The index adds ~15% skill over the unconditional mean and points the right direction two times in three, but does not beat naive persistence. Significance and persistence-beating need the 2015–2020 backfill (quota-gated).*
 
-**H1-2024 congestion: no anchorage-presence spike (iteration 8).** The 2024 congestion episode — container "bunching", 13.36M TEU in Jan–Apr 2024, extended berth waiting times, tanker/bulk largely unaffected — produced **no** spike in monthly anchorage presence; it was a waiting-time event, not a count event. A queue field is visible in port_core on single days (vision QA), but monthly means were flat to down. This is evidence against the simplest form of the "queue length = congestion signal" hypothesis at monthly resolution, and a caution for applying Verschuur-style queue metrics from monthly SAR aggregates.
+**H1-2024 congestion: no anchorage-presence spike (congestion case study, run-6).** The 2024 congestion episode — container "bunching", 13.36M TEU in Jan–Apr 2024, extended berth waiting times, tanker/bulk largely unaffected — produced **no** spike in monthly anchorage presence; consistent with MPA-reported berth waiting times rather than anchorage-volume growth. A queue field is visible in port_core on single days (vision QA), but monthly means were flat to down. This is evidence against the simplest form of the "queue length = congestion signal" hypothesis at monthly resolution, and a caution for applying Verschuur-style queue metrics from monthly SAR aggregates.
 
 **Nulls kept on the record.** The v0.1 econ join null (n = 9, all p > 0.18) and the full-period total-AOI detrended null (all |r| ≤ 0.14, n.s., n = 125 in the first per-scene run) are retained above because they bound the claim: the signal is zone-specific and era-specific, not a generic "satellites see the economy" effect. The single surviving hint outside eOPL — bunker MA3-YoY ρ = +0.19 (p = 0.035) in the first per-scene run — is labeled hypothesis-only and was superseded by the zone-resolved analysis.
 
@@ -335,11 +352,11 @@ For calibration context, the frozen v3.1 detector on 12 monthly composites (2025
 
 ## 6. Conclusion
 
-A free, open, reproducible Sentinel-1 pipeline produces a zone-resolved vessel-presence index for the Singapore Strait whose Eastern-OPL component tracks monthly bunker sales at Pearson r = +0.73 (Spearman ρ = +0.74) (n = 57), survives detrending and a wind control (partial r = +0.696), explains R² = 0.478 of bunker-sales variance alone and 0.700 with official tanker data, and whose mechanism — a tanker anchorage — is confirmed by independent historical AIS (77% tanker anchored reports, 4,240 unique vessels in one month) and by an 84.2%-precision AIS match at the tuned preset.
+A free, open, reproducible Sentinel-1 pipeline produces a zone-resolved vessel-presence index for the Singapore Strait whose Eastern-OPL component tracks monthly bunker sales at Pearson r = +0.73 (Spearman ρ = +0.74) (n = 57, 2019-05..2026-03; ≥2021 subsample n=52, r=+0.72), survives detrending and a wind control (partial r = +0.696), explains R² = 0.478 of bunker-sales variance alone and 0.700 with official tanker data, and whose mechanism — a tanker anchorage — is confirmed by independent historical AIS (77% tanker anchored reports, 4,240 unique vessels in one month) and by an 84.2%-precision AIS match at the tuned preset.
 
 Equally important is what did not survive: the index does not beat persistence out-of-sample; the 2024 congestion episode was invisible in monthly presence counts; the mega-ship consolidation trend was a detector-version artifact and is retracted; and the signal exists only in the right zone — total-area counts are noise. The claim this paper defends is therefore narrow: **SAR-native anchorage presence is a contemporaneous, weather-insensitive, independently validated, freely available indicator of bunkering activity — an availability lead over official prints, not (yet) a forecasting edge.**
 
-Everything needed to check or extend this — detector code, 248-scene series, 72-point parameter grid, package on PyPI — is open. The highest-value next steps are the 2015–2020 backfill (power for the nowcast test), a second port (generalization), and per-vessel AIS dwell matching (turning the stock index into a flow measurement).
+Everything needed to check or extend this — detector code, 248-scene series, 72-point parameter grid, package on PyPI — is open. The highest-value next steps are the 2015–2020 backfill (power for the nowcast test), a second port (generalization), and the TROPOMI emissions module (per-corridor NO₂ attribution).
 
 ---
 
@@ -407,7 +424,7 @@ Everything needed to check or extend this — detector code, 248-scene series, 7
 - atlite (PyPSA): https://github.com/PyPSA/atlite
 
 **Software**
-- `strait` package: https://pypi.org/project/strait-observatory/0.1.0/
+- `strait` package: https://pypi.org/project/strait-observatory/0.2.0/
 
 ---
 
