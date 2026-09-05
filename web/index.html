@@ -59,16 +59,21 @@
     <div class="card">
       <h2>Headline results (honest)</h2>
       <div class="kpi">
-        <div><div class="v">870+</div><div class="k">radar scenes processed<br>2015–2026</div></div>
-        <div><div class="v pos">r≈0.7</div><div class="k">anchorage presence vs<br>bunker sales (detrended)</div></div>
-        <div><div class="v pos">r≈0.5</div><div class="k">vs container TEU &amp;<br>vessel arrivals</div></div>
+        <div><div class="v">248</div><div class="k">radar scenes processed<br>2016–2026</div></div>
+        <div><div class="v pos">r=+0.73</div><div class="k">eOPL vs bunker sales<br>(Pearson, n=57)</div></div>
+        <div><div class="v pos">84%</div><div class="k">AIS-validated precision<br>(tuned preset)</div></div>
       </div>
       <p style="margin-top:10px; color:var(--mut); font-size:12.5px;">
-        Ships anchored in the eastern OPL (open water NE of Batam) co-move with official statistics —
-        robust to detrending (YoY changes, n=45): bunker sales r=+0.46 (MA3: +0.68), arrivals +0.37, container +0.33.
-        Total-AOI counts show no detrended signal — <span class="neg">zone choice is the whole game</span>.
-        H1-2024 congestion: <b>no queue spike</b> in any zone (presence slightly down); official container arrivals also flat —
-        it was a waiting-time event. Full failure log in the repo README.</p>
+        Satellite radar explains <b>R²=0.478</b> of bunker sales variance alone — weather adds nothing, and the
+        signal survives detrending (YoY r=+0.46). The mechanism is confirmed by AIS: the eOPL is a tanker
+        anchorage (77% of anchored reports), with median tanker dwell of 24.9 hours per visit.
+        <span class="neg">Negative results reported:</span> OOS nowcast does not beat persistence; H1-2024
+        congestion was invisible in monthly counts; mega-ship consolidation was a detector artifact.</p>
+    </div>
+    <div class="card">
+      <h2>SAR × AIS overlay (live + historical)</h2>
+      <img class="chart" src="assets/ais_sar_overlay.png" alt="SAR and AIS overlay">
+      <div style="color:var(--mut); font-size:11.5px; margin-top:4px;">Red = SAR detections (Aug 2026). Triangles = live AIS vessels (Sep 2026). Gold labels = anchored tankers (bunkering ops). Yellow box = eOPL zone (AIS-validated tanker anchorage).</div>
     </div>
     <div class="card">
       <h2>Index vs official container throughput</h2>
