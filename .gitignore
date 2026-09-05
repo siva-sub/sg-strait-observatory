@@ -17,3 +17,11 @@ experiments/perscene_run*.log
 .pi-subagents/
 *.pyc
 __pycache__/
+
+# repo hygiene: invalid v2 artifact + intermediate QA renders (failure log documents them)
+experiments/results/detections_v2.geojson
+experiments/results/qa3_*
+experiments/results/qa4_*
+experiments/results/qa5_*
+experiments/results/qa2_detections_202601.png
+.feynman/
