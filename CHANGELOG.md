@@ -92,3 +92,8 @@
 - Diagnostics: wOPL negative = level artifact; Passenger link = common trend only.
 - Port-limits GIS iteration: data.gov.sg package_search empty/403; web retry in flight; else marked blocked.
 - CDSE quota still exhausted (403 probe); iteration 9 backfill remains staged for quota reset.
+
+## 2026-09-05 (final) — Iteration 12 blocked; executable iteration set closed
+
+- Port-limit GIS: package_search and /api/v1/datasets both return {}; scrape of MPA agency page yields no list. BLOCKED with evidence; zones stay approximations (README caveat already present).
+- Loop state: 9 staged (CDSE quota), 10 done (tanker mechanism), 11 done (robustness + COVID caveat), 12 blocked. All pushed.
