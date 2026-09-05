@@ -138,3 +138,20 @@
 - Wind data: 140 months, Singapore Strait; monsoon pattern confirmed (NE 19.7 m/s > SW 16.8 > Inter 15.7).
 - KEY FINDING: eOPL anchorage counts are wind-INDEPENDENT (r=+0.02, p=0.907) while total counts ARE wind-sensitive (r=+0.37, p=0.004). Partial correlation eOPL-bunker|wind = +0.75 (vs raw +0.73). The economic signal is clean of weather artifacts.
 - Total-count wind-sensitivity explains why the total-AOI index showed no detrended signal in iteration 11: it was contaminated by weather-driven false positives.
+
+## 2026-09-06 — Figure visual validation (GLM reviewer, 7 rounds)
+
+**Round 1 (FAIL overall) → Round 7 (all PASS).** Every figure regenerated after pixel-measured visual review by an independent glm-5.3-flash reviewer subagent.
+
+**Substantive defects caught and fixed (would have drawn reviewer fire):**
+1. Fig 3 claimed "(with days-observed)" but encoded nothing; index-axis hid 26 missing months — now a true calendar axis with 4 shaded gaps
+2. Fig 3 line bridged gaps, implying continuity across 11 missing months — root cause: inverted cumsum mask (`(~seg_break).cumsum()` never increments; fixed to `seg_break.cumsum()`), verified by red-pixel tracing at all 4 breaks
+3. Fig 4 significance line drawn at 0.393 not 0.404 — off-by-one in Fisher SE (1/√(n−2) vs 1/√(n−3)); recomputed t-based: 0.4044
+4. Fig 4 window mislabeled "24-month" (actually 24 observations spanning up to 39 calendar months)
+5. Fig 5 vessel-name labels mutually overprinted — replaced with numbered circles + key box; rendered-pixel displacement loop guarantees ≥43px separation
+6. Fig 5 had a 16% anisotropic stretch (Singapore is at 1.3°N — my 1.9° lat weighting was a 58°N error; fixed to 1/cos(1.3°))
+7. Paper table said "37 rolling windows" — correct is 34 (57−24+1)
+
+**Statistical additions prompted by review:** 95% CI band + outlier sensitivity (r=+0.78 excluding 4 |z|>2 months) on fig 2; Fisher-z CI + significance threshold + 13/34 below-threshold count on fig 4.
+
+**Process lesson (recorded for future figures):** pixel-level review by a fresh vision model catches what self-checks miss — my own "verified 0 collisions" claims were falsified twice (data-coords check missed rendered text extents; wrong latitude weighting). The only checks that held were post-render window-extent measurements and color-blob censuses on the saved PNG.
