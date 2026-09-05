@@ -29,3 +29,4 @@ notes/alpha_login.log
 experiments/data/crops/
 strait/dist/
 strait/*.egg-info/
+experiments/data/ais_historical/
