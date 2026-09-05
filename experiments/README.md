@@ -488,3 +488,51 @@ The eOPL zone has the HIGHEST SAR-to-anchored-AIS ratio (0.96) — the SAR detec
 - AISStream.io (live WebSocket, free API)
 - Mendeley dataset: "AIS Data from 11 ports around the globe" (Singapore, Oct 2023, 610K records)
 - AISHub.net (community REST API, free membership, 1/min rate limit)
+
+## Iteration 26 — `strait` package (atlite-inspired, 2026-09-05)
+
+**Goal:** Transform the Singapore Strait Observatory from a collection of scripts into an installable, reusable Python package that anyone can use for any maritime region.
+
+**Architecture (directly inspired by [atlite](https://github.com/PyPSA/atlite)):**
+
+```
+strait/
+├── __init__.py       → exports Cutout, Zones, detect, aggregate, AISMatch
+├── cutout.py         → Cutout class (spatial/temporal abstraction, like atlite.Cutout)
+├── zones.py          → Built-in zone definitions (Singapore, Rotterdam, custom)
+├── detect/
+│   └── __init__.py   → CFAR (v3.1) + Trimmed CFAR (v4) vessel detection
+├── aggregate.py      → Zone × time aggregation (monthly/weekly/daily)
+├── validate.py       → AISMatch (SAR-AIS matching, precision/recall)
+└── data/
+    ├── __init__.py   → Data source registry
+    └── sentinel1.py  → CDSE authentication, OData/Sentinel Hub access, S2Coast land mask
+```
+
+**The 5-line API:**
+```python
+import strait
+cutout = strait.Cutout(module="sentinel1", x=slice(103.4, 104.6), y=slice(1.0, 1.6), time=slice("2021-01", "2026-09"))
+cutout.prepare()
+detections = cutout.detect(method="trimmed_cfar")
+monthly = cutout.aggregate(detections, zones=strait.Zones.singapore_strait())
+```
+
+**What works now:**
+- ✅ Cutout creation and repr
+- ✅ Zone definitions (Singapore Strait built-in)
+- ✅ Detection algorithms (both CFAR variants)
+- ✅ Aggregation logic
+- ✅ AIS validation framework
+- ✅ Package structure, pyproject.toml, importable
+
+**What's stubbed (needs implementation):**
+- `data/sentinel1.py` → full download pipeline (currently points to observatory scripts)
+- End-to-end test with real data
+
+**Next steps to make it pip-installable:**
+1. Implement the data download pipeline (port from observatory scripts)
+2. Add tests (pytest)
+3. Set up CI (GitHub Actions)
+4. Publish to PyPI
+5. Write documentation (readthedocs)
