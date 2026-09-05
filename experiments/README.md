@@ -293,3 +293,27 @@ Brightest pixel = Jurong Island (petrochemical complex, 276–376 nW/cm²/sr acr
 - Partial correlation (eOPL vs bunker | wind): **+0.75** (raw: +0.73) — controlling for wind slightly STRENGTHENS the signal
 
 This is a strong result: the eOPL anchorage zone captures genuine shipping activity, not weather artifacts. The total-AOI count picks up wind-driven rough-sea false positives (higher wind → brighter sea → more threshold crossings); the eOPL zone doesn't. This validates the zone-specificity finding from iteration 10.
+
+## Iteration 18 — ERA5 wind from CDS (2026-09-05)
+
+**ERA5 data:** 132 months (2015-01..2025-12), 3×5 grid (0.25°), monthly mean wind speed.
+Source: Copernicus Climate Data Store (PAT auth in .env). Wave height not available in monthly means for this area.
+
+**ERA5 vs Open-Meteo comparison:**
+| Metric | ERA5 (mean wind) | Open-Meteo (mean of daily max) |
+|---|---|---|
+| vs total ships | r=+0.54 (p<0.001) | r=+0.37 (p=0.004) |
+| vs eOPL ships | r=+0.37 (p=0.005) | r=+0.02 (p=0.907) |
+| vs bunker sales | r=+0.14 (p=0.32) | r=-0.20 (p=0.14) |
+
+Interpretation: ERA5 mean wind captures seasonal trade patterns (NE monsoon = more shipping + more wind); Open-Meteo daily maxima capture weather extremes that cause SAR false positives. The eOPL zone is specifically insensitive to extreme weather (Open-Meteo r=0.02) — it measures genuine activity, not weather artifacts.
+
+**Partial correlation with ERA5 wind control:**
+- eOPL vs bunker (raw): r=+0.691
+- eOPL vs bunker | ERA5 wind: **r=+0.696** — controlling for wind strengthens the signal
+
+**Detrended OLS (YoY log-diff, n=42):**
+```
+d(bunker) = 0.014 + 0.449 × d(eOPL) + 0.041 × d(wind)
+```
+eOPL coefficient 0.449 is the dominant driver; wind coefficient 0.041 is negligible.
