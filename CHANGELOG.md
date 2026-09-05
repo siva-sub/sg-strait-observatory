@@ -107,3 +107,11 @@
 - Built: download_product.py (coverage-scored product selection via GeoFootprint), safe_to_crop.py (local SAFE processing: UNCALIB DN + GCP inverse warp + calibration-LUT sigma0 + 5x5 multilook; linear output, SH-compatible), backfill_odata.py (Phase A temporal-median Otsu land mask from spread crops; Phase B 81 months, disk-flat, resumable).
 - Debug trail: GeoFootprint field name (not ContentGeometry); GeoJSON-not-WKT; single merged GRD calibration file naming; linear-vs-dB input contract; single-look speckle (multilook fix); single-image Otsu circularity (ships are 'bright' class -> temporal median mask is the designed fix).
 - Overnight run launched: experiments/backfill_run.log; ~10h ETA for 81 months at ~5 MB/s download.
+
+## 2026-09-05 (final+1) — Iteration 14: trimmed CFAR from literature (staged)
+
+- 50-yr SAR ATR survey (arXiv 2509.22159): guard-cell censoring = key optimization for dense-target scenes; our uniform CFAR lets ships raise local threshold, suppressing neighbors (vision QA round-1 miss).
+- v4 trimmed CFAR implemented (two-pass: provisional threshold censors ships from background stats). Compiled, staged.
+- OData backfill: 6 crops downloaded; downloads fail for 2019-2023 months (timeouts, possibly LTA retrieval latency); Phase A needs ≥8.
+- CDSE quota still exhausted; SH monthly composites still missing; v3.1 vs v4 comparison blocked on temporal-median mask which needs those composites.
+- Lessons: single-image Otsu cannot separate ships from land (both "bright"); temporal median is the designed fix and is non-negotiable.

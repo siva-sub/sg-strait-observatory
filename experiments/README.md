@@ -171,3 +171,36 @@ Train 2021-09..2023-01 (n=17), test 2024-01..2026-03 (n=27); target = YoY log-ch
 - Lagged eOPL (t-1): worse (sign 37%) — no lead time beyond data availability.
 - Persistence baseline (last month's YoY): RMSE 0.104 — STILL BEATS the satellite model. YoY bunker changes are highly autocorrelated.
 Verdict (honest): the index adds ~15% skill over the unconditional mean and points the right direction 2-in-3, but does not yet beat naive persistence; significance and persistence-beating need the 2015-2020 backfill (quota-gated). Saved: nowcast_oos.json.
+
+## Iteration 14 — Literature-guided optimization: trimmed CFAR (2026-09-05, STAGED)
+
+**Papers consulted:**
+- Zhou et al. (2026), "Fifty Years of SAR ATR", arXiv 2509.22159 — survey of ~250 papers;
+  confirms our CFAR architecture is standard baseline; identifies guard-cell censoring
+  as the key improvement for dense-target scenes.
+- Greidanus et al. (2017), "SUMO ship detector", Remote Sensing 9(3):246 — EMSA operational
+  detector; validates CFAR + VV polarization + no multi-looking for operational use.
+- Iervolino & Guida (2017), IEEE JSTARS — GLRT detector for non-AIS vessels.
+- Ai et al. (2021), "BTS-CFAR", IEEE TAES — bilateral trimmed-statistics CFAR for
+  complex ocean scenes; the direct precedent for our v4.
+
+**Key finding from literature (applicable to our pipeline):**
+Our v3.1 CFAR uses `uniform_filter` for local μ and σ — the test pixel and nearby bright
+targets are included in the background estimate. In dense anchored queues, ships raise
+the local threshold, suppressing neighboring detections (the exact miss found by vision
+QA round 1). The literature fix is **trimmed/censored statistics**: exclude pixels above
+a provisional threshold from the background window.
+
+**v4 implementation** (`detect_vessels_v4.py`): two-pass trimmed CFAR —
+pass 1: global robust threshold (median + K·MAD); pass 2: local μ/σ from sea-only pixels
+(below provisional threshold), purely adaptive (no floor). Compiled and ready.
+
+**Blocked from testing:** the comparison requires the temporal-median land mask, which
+needs the 12 SH monthly composites (lost during gh-pages branch incident) which need
+CDSE Process API (quota-blocked). Single-image Otsu masks ships as land — fundamental
+limitation, documented above. Test when quota resets:
+```bash
+.venv/bin/python experiments/fetch_s1_monthly.py     # restore 12 composites
+.venv/bin/python experiments/detect_vessels_v4.py    # v4 trimmed CFAR
+# compare: monthly_counts_v3.csv vs monthly_counts_v4.csv
+```
