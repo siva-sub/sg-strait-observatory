@@ -146,3 +146,16 @@ If you use this in research, cite the Singapore Strait Observatory:
   url = {https://github.com/siva-sub/strait}
 }
 ```
+
+## Documentation
+
+Full documentation with use cases, API reference, data sources, interpretation guide, and economic context:
+
+| Page | What it covers |
+|---|---|
+| [Getting Started](docs/getting-started.md) | Install, first run, building a local cache |
+| [Data Sources](docs/data-sources.md) | Where to get Sentinel-1, AIS, land masks, official statistics |
+| [API Reference](docs/api-reference.md) | Every class, function, and parameter |
+| [Use Cases](docs/use-cases.md) | Port monitoring, congestion, dark vessels, bunkering, research |
+| [Interpreting Results](docs/interpretation.md) | How to read detections, correlations, and what they mean |
+| [Economic Relevance](docs/economic-relevance.md) | The Singapore case study and why this matters |
