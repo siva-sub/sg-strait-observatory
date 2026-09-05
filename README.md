@@ -15,37 +15,40 @@ When the box moved onto open water, the signal appeared.
 
 ## Headline result
 
-Anchorage presence in the eastern outer port limit (open water northeast of Batam)
-co-moves with Singapore's official statistics, and the relationship survives
-detrending, which is the test that matters: it is not two trends moving together.
+A single satellite radar explains **48% of Singapore's bunker sales** — no weather
+control needed, no trend-riding.
+
+| Model | R² | What it means |
+|---|---|---|
+| bunker ~ eOPL (satellite only) | **0.478** | Radar alone explains 48% |
+| bunker ~ eOPL + ERA5 wind | 0.495 | Weather adds almost nothing |
+| bunker ~ eOPL + wind + tanker arrivals | **0.700** | Practical nowcasting model |
 
 | eOPL ships vs | Levels (n=57) | YoY detrended (n=45) | MA3-YoY (n=43) |
 |---|---|---|---|
 | **Bunker sales** | **r = +0.73** | +0.46 | **r = +0.68** |
 | Vessel arrivals | +0.64 | +0.37 | +0.46 |
 | Container throughput (TEU) | +0.57 | +0.33 | +0.49 |
+| **Tanker arrivals (mechanism)** | **+0.64** | **+0.53** | — |
 
-All p ≤ 0.027. The lead-lag profile peaks at zero lag, so I make no leads-by-a-month
-claim; the practical edge is that satellite scenes exist 2–3 weeks before
-the official prints. The link is strongest where the mechanism is: against tanker
-arrivals specifically it reaches r = +0.53 detrended (p < 0.001), while the western
-anchorage and port zones show no type link at all. Anchored tankers are bunkering
-operations. Zone rectangles are approximations pending official port-limit
-polygons. Only descending passes cover this area. The pre-2021 archive is partially
-blocked by Copernicus long-term-archive retrieval.
+All p ≤ 0.027. The tanker-specific link is the mechanism: anchored tankers ARE
+bunkering operations. Wind control strengthens the signal (partial r = +0.70).
+The rolling-24-month correlation never goes negative (median +0.52).
 
-Counts over the whole strait show no detrended signal. Where you put the box is the
-entire game. And the H1-2024 congestion episode, the one that made global headlines,
-shows **no anchorage-count spike in any zone**: official container-vessel arrivals
-were equally flat (1,087–1,274 per month). It was a waiting-time event, and
-count-based series cannot see it from either side.
+The link is strongest where the mechanism is: the eastern anchorage (open water
+NE of Batam) tracks tanker arrivals at r = +0.53 detrended, while the western
+anchorage and port zones show no type link at all. Zone choice is the entire game.
+
+Counts over the whole strait show no detrended signal — because total-area counts
+pick up wind-driven rough-sea false positives (r = +0.37 vs ERA5 wind). The eOPL
+zone doesn't (r = +0.02 vs extreme wind). This is why the economic signal is clean.
 
 ## Pipeline
 
 ```
 CDSE OData catalogue (862 overpass days, 2015–2026)
   → Sentinel Hub Process API (per-scene VV γ0 crops, ~13 MB each)
-  → temporal-median land mask + local CFAR (μ+5.5σ on dB) + peak-splitting   [detector v3.1]
+  → temporal-median land mask + trimmed CFAR (two-pass censored) + peak-splitting   [v4]
   → anchorage-zone counts per scene (coverage-gated ≥ 0.80)
   → monthly index (mean ± 95% CI) → join with official series → detrended econometrics
   → MapLibre map + charts (web/)
@@ -53,7 +56,7 @@ CDSE OData catalogue (862 overpass days, 2015–2026)
 
 ## How it went
 
-The detector is at v3.1. It got there the slow way. v0 silently dropped dense anchored
+The detector is at v4 (trimmed CFAR). It got there the slow way. v0 silently dropped dense anchored
 queues, because a 600-pixel component cap discarded anything a queue merged into.
 Some scenes covered 36% of the area and others 93%, and for a while the monthly
 averages quietly mixed them. v2's background estimate was poisoned by a fill value,
@@ -61,11 +64,20 @@ and one January reported 11,471 ships. At one point the land and sea flags were 
 spent an afternoon hunting ships on Singapore Island. A `pkill` pattern that matched
 its own shell made three commands vanish mid-run before anyone knew why. A
 vision-model review of the maps caught the Batam zone error when the numbers would
-not. Each of the seven
-failures was caught by a two-day smoke test, an A/B diagnostic, or a fresh pair of
-eyes on an image. The full log, with the numbers each bug produced, is in
-[`experiments/README.md`](experiments/README.md) and
+not. The v4 upgrade (trimmed CFAR from the SAR literature) came after the 50-year
+survey identified that ships in dense queues raise the local threshold and hide their
+neighbors; trimming them out finds 159% more. The S2Coast-2023 land mask from Zenodo
+replaced a temporal-median approximation that was drawing anchorage boxes over Batam
+Island. Each of the failures was caught by a two-day smoke test, an A/B diagnostic,
+or a fresh pair of eyes on an image. The full log, with the numbers each bug produced,
+is in [`experiments/README.md`](experiments/README.md) and
 [`CHANGELOG.md`](CHANGELOG.md).
+
+I also caught my own artifact. When the first historical data points (2016-2018,
+processed with the newer v4 detector) were added to the 2021+ data (processed with
+v3.1), the "mega-ship consolidation" trend I had reported in the scouting phase
+flipped direction. It was a detector-version mismatch, not a real economic signal.
+The calibrated analysis is in `experiments/README.md` iteration 21.
 
 ## Repo layout
 
@@ -87,13 +99,17 @@ python3 -m venv .venv && .venv/bin/pip install numpy scipy rasterio requests pan
 
 ## Data & credits
 
-Copernicus Sentinel-1 (ESA, via the Copernicus Data Space Ecosystem, free and open)
-· MPA and SingStat via data.gov.sg (Singapore Open Data Licence) · basemap CARTO /
-©OpenStreetMap contributors. Method lineage, with citations, is documented in
-`experiments/README.md`: index design follows Cerdeiro et al. 2020 (IMF); land-mask
-false-alarm doctrine from Grover et al. 2018; the validation-first framing responds
-to Kanjir et al. 2018; CFAR as standard front-end per El-Darymli et al. 2013; per-ship
-NO₂ plumes from Georgoulias et al. 2020 and the maritime-emissions review by Batista
-et al. 2025.
+Copernicus Sentinel-1 (ESA, via CDSE OData and Sentinel Hub — free and open)
+· VIIRS nighttime lights (EOG, Earth Observation Group)
+· ERA5 wind (Copernicus Climate Data Store)
+· S2Coast-2023 coastline (Zenodo, Duan et al. 2026)
+· MPA and SingStat via data.gov.sg (Singapore Open Data Licence)
+· Open-Meteo historical weather archive
+· basemap CARTO / ©OpenStreetMap contributors.
+Method lineage with citations is in `experiments/README.md`:
+Cerdeiro et al. 2020 (IMF) for index design; Grover et al. 2018 for land-mask doctrine;
+Kanjir et al. 2018 for the validation-first framing; El-Darymli et al. 2013 for CFAR
+as standard; Georgoulias et al. 2020 and Batista et al. 2025 for per-ship NO₂ plumes;
+Zhou et al. 2026 (arXiv 2509.22159) for the trimmed-CFAR optimization.
 
 Personal portfolio project. Not affiliated with MPA, ESA, or any official body.
