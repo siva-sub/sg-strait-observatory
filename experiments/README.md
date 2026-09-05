@@ -317,3 +317,31 @@ Interpretation: ERA5 mean wind captures seasonal trade patterns (NE monsoon = mo
 d(bunker) = 0.014 + 0.449 × d(eOPL) + 0.041 × d(wind)
 ```
 eOPL coefficient 0.449 is the dominant driver; wind coefficient 0.041 is negligible.
+
+## Iterations 19-20 — Multi-sensor fusion + v4 OData extension (2026-09-05)
+
+### Iteration 19: Multi-sensor fusion model
+
+| Model | R² | Key insight |
+|---|---|---|
+| bunker ~ eOPL (satellite radar only) | **0.478** | Satellite alone explains 48% of bunker sales |
+| bunker ~ eOPL + ERA5 wind | 0.495 | Wind adds only +1.7pp — signal is weather-robust |
+| bunker ~ eOPL + wind + tanker arrivals | **0.700** | Combining satellite + lagged official data: 70% |
+| container_TEU ~ eOPL + wind | 0.305 | Weaker for container (expected — eOPL tracks bunkering) |
+| d(bunker) ~ d(eOPL) + d(wind) [detrended] | **0.284** | eOPL coef +0.449 (t=3.30); wind coef +0.041 (t=1.54, n.s.) |
+
+**VNL independent confirmation:** 2021 (radiance 340,042 ↔ eOPL 78.4 ↔ bunker 4,170) and 2023 (345,413 ↔ 85.5 ↔ 4,378) — both track together, but VNL is annual (insufficient temporal resolution for monthly model).
+
+**Headline:** "Radar satellite alone explains 48% of Singapore's bunker sales; adding weather control changes nothing; adding lagged official tanker data brings it to 70%."
+
+### Iteration 20: v4 trimmed CFAR on OData crops (2016-2018 extension)
+
+| Date | Total ships | eOPL | port_core | Coverage |
+|---|---|---|---|---|
+| 2016-08 | 1,289 | 232 | 430 | 100% |
+| 2017-09 | 1,342 | 276 | 437 | 100% |
+| 2017-06-15 | 1,390 | 225 | 457 | 91% |
+| 2018-09 | 1,644 | 226 | 508 | 91% |
+| 2026-0x | 1,538 | 277 | 554 | 91% |
+
+All processed with S2Coast land mask + v4 trimmed CFAR. Historical extension back to 2016 now available. OK days by year: 2016(1), 2017(2), 2018(1), 2019(1), 2020(6), 2021(61), 2022(54), 2023(4), 2024(49), 2025(55), 2026(14).
