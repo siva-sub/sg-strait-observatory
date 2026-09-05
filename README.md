@@ -2,6 +2,8 @@
 
 **Ships anchored off Singapore, counted from free satellite radar — and the count tracks the port's economy.**
 
+**Live map:** https://siva-sub.github.io/sg-strait-observatory/
+
 I count vessels at anchor in the Singapore Strait using Sentinel-1 SAR, which works at
 night, sees through cloud, and costs nothing. Then I compare those counts with thirty
 years of official monthly statistics published on data.gov.sg by Singapore's port and
