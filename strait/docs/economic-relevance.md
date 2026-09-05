@@ -126,4 +126,4 @@ The entire pipeline — from satellite download to economic indicator — costs 
 - Elvidge et al. (2017/2021), VIIRS nighttime lights, Remote Sensing
 - Feng et al. (2020), Bunkering statistics from AIS, Journal of Transport Geography
 - Zhou et al. (2026), *Fifty Years of SAR ATR*, arXiv 2509.22159
-- [The Singapore Strait Observatory](https://github.com/siva-sub/sg-strait-observatory) — the source project
+- [The Singapore Strait Observatory](https://github.com/siva-sub/strait-observatory) — the source project

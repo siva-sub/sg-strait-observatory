@@ -53,7 +53,7 @@ Sentinel-1 downloads come as ZIP files containing raw DN (digital number) values
 3. **Apply land mask** (see below) to exclude land pixels
 4. **Save as GeoTIFF** with the correct spatial reference
 
-The [observatory project](https://github.com/siva-sub/sg-strait-observatory) includes scripts for this: `experiments/download_product.py` and `experiments/safe_to_crop.py`.
+The [observatory project](https://github.com/siva-sub/strait-observatory) includes scripts for this: `experiments/download_product.py` and `experiments/safe_to_crop.py`.
 
 ### Quota considerations
 

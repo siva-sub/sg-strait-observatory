@@ -1,17 +1,15 @@
-# Singapore Strait Observatory
+# strait
 
-**Ships anchored off Singapore, counted from free satellite radar — and the count tracks the port's economy.**
+**Detect ships from satellite radar. Measure port activity from space. Any port, any time.**
 
-**Live map:** https://siva-sub.github.io/sg-strait-observatory/
+A Python package (`pip install strait-observatory`) for detecting vessels from Sentinel-1 SAR
+and turning those detections into economic indicators. Works for any port with open-water
+anchorages. Validated on Singapore, where satellite-derived anchorage presence explains
+48% of bunker sales variance (R²=0.478, detrended, weather-robust, AIS-confirmed).
 
-I count vessels at anchor in the Singapore Strait using Sentinel-1 SAR, which works at
-night, sees through cloud, and costs nothing. Then I compare those counts with thirty
-years of official monthly statistics published on data.gov.sg by Singapore's port and
-statistics agencies.
-
-The first result was a null. The first result was also wrong: my eastern anchorage
-zone was drawn over Batam island, so I was correlating land with trade statistics.
-When the box moved onto open water, the signal appeared.
+**Live demo (Singapore):** https://siva-sub.github.io/strait-observatory/
+**PyPI:** https://pypi.org/project/strait-observatory/
+**Docs:** [Full documentation](docs/index.md) — getting started, data sources, API, use cases, interpretation, economic context
 
 ## Headline result
 
