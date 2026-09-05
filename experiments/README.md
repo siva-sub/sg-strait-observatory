@@ -204,3 +204,30 @@ limitation, documented above. Test when quota resets:
 .venv/bin/python experiments/detect_vessels_v4.py    # v4 trimmed CFAR
 # compare: monthly_counts_v3.csv vs monthly_counts_v4.csv
 ```
+
+## Iteration 15 — GEE Community Catalog scan (2026-09-05)
+
+Browsed https://gee-community-catalog.org/browse (5,289 datasets) via chromiumfish MCP.
+
+**Relevant finds for Singapore Strait Observatory:**
+
+| Dataset | GEE Asset | Relevance | Action |
+|---|---|---|---|
+| **S2Coast-2023** | `projects/sat-io/open-datasets/S2COAST-2023` | Global 10m coastline from Sentinel-2, 2.17M km, RMSE 17.4m | **Land-mask replacement** — solves the "single-image Otsu can't separate ships from land" problem; vector format can be rasterized to our 2400×1500 grid |
+| **DEA Coastlines** | `/projects/dea_shorlines/` | Time-series shoreline change from Landsat (Bishop-Taylor methodology from our dossier) | Coastal-change module (rank-4 candidate from scouting) |
+| **Global Shoreline Dataset** | `/projects/shoreline/` | Alternative coastline product | Fallback for land mask |
+| **WorldPop** | `/projects/worldpop/` | Population grids 2015-2030 | Socio-economic context layer |
+| **SSTG** | `/projects/sstg/` | Global gridded SST | Shipping-environment context |
+
+**Not available in community catalog:**
+- EOG VIIRS Night Time Light (2013-2021) — behind "insiders" paywall
+- No AIS / Global Fishing Watch / shipping-specific datasets
+- No ERA5 wind (available in main GEE catalog, not community)
+
+**Key optimization path:** Replace temporal-median land mask with S2Coast-2023 rasterized to our grid:
+```python
+# GEE snippet
+var s2Coast = ee.FeatureCollection("projects/sat-io/open-datasets/S2COAST-2023");
+// Filter to Singapore bbox, rasterize to 2400x1500, export as GeoTIFF
+```
+This eliminates the chicken-and-egg problem (needing SH composites for the mask when SH is quota-blocked) and provides a more accurate coastline than the temporal median.

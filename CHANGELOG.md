@@ -115,3 +115,11 @@
 - OData backfill: 6 crops downloaded; downloads fail for 2019-2023 months (timeouts, possibly LTA retrieval latency); Phase A needs ≥8.
 - CDSE quota still exhausted; SH monthly composites still missing; v3.1 vs v4 comparison blocked on temporal-median mask which needs those composites.
 - Lessons: single-image Otsu cannot separate ships from land (both "bright"); temporal median is the designed fix and is non-negotiable.
+
+## 2026-09-05 (final+2) — Iteration 15: GEE Community Catalog scan
+
+- Browsed 5,289 datasets via chromiumfish MCP; catalog is JS-rendered (fetch_content blocked).
+- Key find: S2Coast-2023 global 10m coastline (GEE: projects/sat-io/open-datasets/S2COAST-2023) — can replace temporal-median land mask, solving the mask-dependency problem.
+- Also found: DEA Coastlines (dossier methodology), WorldPop, SSTG, Global Shoreline Dataset.
+- Not available: VIIRS nighttime lights (insiders only), no AIS/shipping datasets.
+- Next: download S2Coast for Singapore bbox → rasterize to project grid → use as fixed land mask for v4 trimmed-CFAR detector.
