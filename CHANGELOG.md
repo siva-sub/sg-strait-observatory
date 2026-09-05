@@ -84,3 +84,11 @@
 - **ECON VERDICT FLIPS with corrected eOPL zone (open water NE of Batam):** levels n=57: bunker r=+0.73, arrivals +0.64, container +0.57 (p<0.001). DETRENDED YoY n=45: bunker +0.46, arrivals +0.37, container +0.33 (p<=0.027). MA3-YoY: bunker +0.68/0.60, container +0.49/0.51, arrivals +0.46/0.50. Lead-lag: contemporaneous co-movement (k=0 peak, no false lead claim). Yesterday's null was the Batam-box zone error.
 - **Congestion verdict (clean, n=13 event scenes):** NO spike in any zone (eOPL 0.96x n.s.; total 0.89x down); official arrivals flat. Congestion was waiting-time; any queue beyond AOI/coverage is unobserved.
 - Map updated: headline panel now shows the honest final numbers; charts refreshed in web/assets.
+
+## 2026-09-05 (late, cont.) — Iteration 11: robustness battery (offline)
+
+- Flagship eOPL-bunker result robust: rolling-24mo r median 0.52 (range 0.26-0.71, never negative); log-diff detrend 0.50; S1A-era levels 0.73.
+- Honest caveat added: detrended strength partly COVID-driven (exclusion: levels 0.77 / YoY 0.29).
+- Diagnostics: wOPL negative = level artifact; Passenger link = common trend only.
+- Port-limits GIS iteration: data.gov.sg package_search empty/403; web retry in flight; else marked blocked.
+- CDSE quota still exhausted (403 probe); iteration 9 backfill remains staged for quota reset.

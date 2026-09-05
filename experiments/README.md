@@ -154,3 +154,12 @@ Run history: v1 complete (old zones, no coverage gate) -> v2/v3 fixes (eOPL on B
 - Total-AOI counts: no detrended signal (zone choice is the whole game).
 - H1-2024 congestion: no presence spike; waiting-time event. Queue field visible in port_core on single days (glm vision QA) but monthly means flat/down.
 - Honest caveats: n modest (43-57); zones still approximations; single (descending) pass direction; pre-2021 history LTA-blocked (recovery via per-year catalogue + LTA recall queued as v1.1).
+
+## Iteration 11 — robustness battery on the flagship result (2026-09-05)
+
+- Rolling 24-month windows (37 windows): eOPL-vs-bunker Pearson r spans 0.26–0.71, median 0.52, never negative; latest window 0.64.
+- COVID exclusion (drop 2020-01..2021-06): levels strengthen (bunker 0.77, arrivals 0.68, container 0.66); YoY weakens (0.29/0.18/0.27) — an honest caveat: part of the detrended strength rides the COVID swing.
+- Alternative detrending (log-diff): bunker 0.50, arrivals 0.41, container 0.33 — survives the method change.
+- Era split: S1A-only months (n=57) bunker levels 0.73; S1D era too short to split.
+- Diagnostics: wOPL-vs-container negative is a level artifact (YoY −0.09 n.s.); eOPL-vs-Passenger is level-only (detrended 0.11) — common trend, not mechanism.
+Saved: experiments/results/robustness_summary.json
