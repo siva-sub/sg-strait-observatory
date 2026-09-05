@@ -26,3 +26,4 @@ experiments/results/qa5_*
 experiments/results/qa2_detections_202601.png
 .feynman/
 notes/alpha_login.log
+experiments/data/crops/
