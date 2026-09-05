@@ -273,3 +273,23 @@ Brightest pixel = Jurong Island (petrochemical complex, 276–376 nW/cm²/sr acr
 **ERA5 wind:** CDS API returning 500s (post-2024 migration auth change). BLOCKED — needs updated PAT format.
 
 **Disk: 71 GB free** (S2Coast shapefiles cleaned after rasterization; VNL globals deleted after cropping).
+
+## Iteration 17 — Wind covariate via Open-Meteo (atlite-inspired, 2026-09-05)
+
+**Inspiration:** [PyPSA/atlite](https://github.com/PyPSA/atlite) — a clean, well-designed Python library that converts weather data (ERA5 wind, solar) into energy-systems time series. Its architecture (Cutout abstraction, multi-source weather data, economic conversion) directly inspired our approach. ERA5 was blocked by the CDS API migration, but Open-Meteo's free historical archive API provided the same data.
+
+**Wind data:** 4,261 daily records → 140 monthly aggregates (2015-01..2026-08), Singapore Strait (1.25°N, 103.95°E). Source: Open-Meteo, no auth required.
+
+**Monsoon pattern confirmed:**
+| Season | Wind (m/s) | Total ships | eOPL ships |
+|---|---|---|---|
+| NE monsoon (Dec-Feb) | 19.7 | 394 | 92.1 |
+| SW monsoon (Jun-Sep) | 16.8 | 374 | 82.4 |
+| Inter-monsoon | 15.7 | 364 | 82.5 |
+
+**Key finding — the eOPL signal is CLEAN of weather:**
+- Wind vs total ships: r=+0.37 (p=0.004) — total detections ARE wind-sensitive
+- Wind vs eOPL ships: r=+0.02 (p=0.907) — **eOPL is completely wind-independent**
+- Partial correlation (eOPL vs bunker | wind): **+0.75** (raw: +0.73) — controlling for wind slightly STRENGTHENS the signal
+
+This is a strong result: the eOPL anchorage zone captures genuine shipping activity, not weather artifacts. The total-AOI count picks up wind-driven rough-sea false positives (higher wind → brighter sea → more threshold crossings); the eOPL zone doesn't. This validates the zone-specificity finding from iteration 10.

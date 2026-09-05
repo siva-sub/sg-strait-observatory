@@ -131,3 +131,10 @@
 - v4 trimmed CFAR tested with S2Coast mask on 5 OData crops: mean +159% more detections vs v3.1. Root cause confirmed: v3.1 threshold p90 = +0.8 dB near bright ships; v4 = -9.7 dB (stable).
 - ERA5 wind: BLOCKED (CDS API 500s, post-migration auth format change).
 - Technical notes: /vsigzip/ for streaming VNL decompression (avoids 11.6 GB tmp); VNL downloaded via EOG Keycloak auth (curl_cffi session); disk-flat VNL processing.
+
+## 2026-09-05 (final+4) — Iteration 17: wind covariate (atlite-inspired)
+
+- atlite (PyPSA, 399 stars) inspired the weather-as-covariate approach; its ERA5 interface blocked by CDS API migration; Open-Meteo (free, no auth) used as substitute.
+- Wind data: 140 months, Singapore Strait; monsoon pattern confirmed (NE 19.7 m/s > SW 16.8 > Inter 15.7).
+- KEY FINDING: eOPL anchorage counts are wind-INDEPENDENT (r=+0.02, p=0.907) while total counts ARE wind-sensitive (r=+0.37, p=0.004). Partial correlation eOPL-bunker|wind = +0.75 (vs raw +0.73). The economic signal is clean of weather artifacts.
+- Total-count wind-sensitivity explains why the total-AOI index showed no detrended signal in iteration 11: it was contaminated by weather-driven false positives.
