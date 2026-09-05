@@ -27,7 +27,10 @@ detrending, which is the test that matters: it is not two trends moving together
 
 All p ≤ 0.027. The lead-lag profile peaks at zero lag, so I make no leads-by-a-month
 claim; the practical edge is that satellite scenes exist 2–3 weeks before
-the official prints. Zone rectangles are approximations pending official port-limit
+the official prints. The link is strongest where the mechanism is: against tanker
+arrivals specifically it reaches r = +0.53 detrended (p < 0.001), while the western
+anchorage and port zones show no type link at all. Anchored tankers are bunkering
+operations. Zone rectangles are approximations pending official port-limit
 polygons. Only descending passes cover this area. The pre-2021 archive is partially
 blocked by Copernicus long-term-archive retrieval.
 
