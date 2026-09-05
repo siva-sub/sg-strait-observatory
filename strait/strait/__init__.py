@@ -19,7 +19,7 @@ __author__ = "Sivasubramanian S."
 
 from .cutout import Cutout
 from .zones import Zones
-from .detect import detect_vessels, TRIMMED_CFAR, CLASSIC_CFAR
+from .detect import detect_vessels, TRIMMED_CFAR, CLASSIC_CFAR, PRESETS
 from .aggregate import aggregate
 from .validate import AISMatch
 
@@ -31,5 +31,6 @@ __all__ = [
     "AISMatch",
     "TRIMMED_CFAR",
     "CLASSIC_CFAR",
+    "PRESETS",
     "__version__",
 ]

@@ -23,6 +23,24 @@ logger = logging.getLogger(__name__)
 CLASSIC_CFAR = "cfar"
 TRIMMED_CFAR = "trimmed_cfar"
 
+# Parameter presets optimized via AIS ground-truth grid search (iteration 28)
+# Grid: 72 combinations tested against 2,145 unique anchored AIS vessels
+# See experiments/results/parameter_optimization.csv
+PRESETS = {
+    "balanced": {
+        "k": 5.5, "window": 64, "min_pixels": 3,
+        "description": "Economic indicators — good precision/volume balance (72% AIS match, F1=0.69)",
+    },
+    "precision": {
+        "k": 6.5, "window": 32, "min_pixels": 7,
+        "description": "Dark vessel / enforcement — highest confidence (84% AIS match)",
+    },
+    "recall": {
+        "k": 4.0, "window": 64, "min_pixels": 3,
+        "description": "Comprehensive census — maximum detections (2008, 62% AIS match)",
+    },
+}
+
 # Default parameters
 DEFAULT_K = 5.5
 DEFAULT_WINDOW = 64       # pixels (~2.4 km at 37 m/px)
