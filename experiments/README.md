@@ -536,3 +536,25 @@ monthly = cutout.aggregate(detections, zones=strait.Zones.singapore_strait())
 3. Set up CI (GitHub Actions)
 4. Publish to PyPI
 5. Write documentation (readthedocs)
+
+## Iteration 29 — AIS dwell time analysis (2026-09-06)
+
+**Method:** Computed per-vessel anchorage dwell time from historical AIS (October 2023, Mendeley). Consecutive anchored position reports in the same zone are aggregated into dwell events (hours at anchor).
+
+**This turns the stock metric (vessel count) into a flow metric (vessel-hours):**
+
+| Zone | Dwell events | Unique vessels | Median dwell | Total vessel-hours |
+|---|---|---|---|---|
+| port_core | 2,550 | 2,200 | 15.6h | 151,138 |
+| **eastern_opl** | **533** | **455** | **17.3h** | **27,115** |
+| western_opl | 753 | 560 | 16.0h | 39,603 |
+
+**Tanker dwell in eOPL (the bunkering mechanism quantified):**
+- 298 unique tankers, 346 dwell events
+- **Median dwell: 24.9 hours** (P25/P50/P75: 10.6/24.9/77.6h)
+- 246 tankers stay >12h; 174 stay >24h
+- Total: 22,851 tanker-hours in eOPL in October 2023
+
+**Interpretation:** The median tanker spends ~25 hours at anchor in the eOPL before moving. This is consistent with a bunkering operation (typically 12-48 hours for a bunker barge or receiving vessel). The vessel-hours metric (22,851 tanker-hours/month) is a direct measure of bunkering activity volume — richer than simple vessel counts because it weights each vessel by time spent.
+
+**Files saved:** `experiments/results/ais_dwell_times.csv` (4,466 records), `experiments/results/ais_monthly_dwell.csv`
