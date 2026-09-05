@@ -101,3 +101,9 @@
 ## 2026-09-05 (final cont.) — Iteration 13: OOS nowcast (honest)
 
 - Skill +0.15 vs mean baseline, 67% direction, OOS r=+0.31 (p=0.115, n.s.); persistence baseline still wins; lagged eOPL no lead. Documented; nowcast_oos.json saved. Executable iteration set exhausted; CDSE-gated items (backfill, TROPOMI, tif restore) await processing-unit replenishment.
+
+## 2026-09-05 (late) — OData backfill launched (bypasses processing-unit quota)
+
+- Built: download_product.py (coverage-scored product selection via GeoFootprint), safe_to_crop.py (local SAFE processing: UNCALIB DN + GCP inverse warp + calibration-LUT sigma0 + 5x5 multilook; linear output, SH-compatible), backfill_odata.py (Phase A temporal-median Otsu land mask from spread crops; Phase B 81 months, disk-flat, resumable).
+- Debug trail: GeoFootprint field name (not ContentGeometry); GeoJSON-not-WKT; single merged GRD calibration file naming; linear-vs-dB input contract; single-look speckle (multilook fix); single-image Otsu circularity (ships are 'bright' class -> temporal median mask is the designed fix).
+- Overnight run launched: experiments/backfill_run.log; ~10h ETA for 81 months at ~5 MB/s download.
