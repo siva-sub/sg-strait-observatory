@@ -345,3 +345,30 @@ eOPL coefficient 0.449 is the dominant driver; wind coefficient 0.041 is negligi
 | 2026-0x | 1,538 | 277 | 554 | 91% |
 
 All processed with S2Coast land mask + v4 trimmed CFAR. Historical extension back to 2016 now available. OK days by year: 2016(1), 2017(2), 2018(1), 2019(1), 2020(6), 2021(61), 2022(54), 2023(4), 2024(49), 2025(55), 2026(14).
+
+## Iteration 21 — Extended timeline + detector-calibration analysis (2026-09-05)
+
+**The headline: caught my own artifact.**
+
+When the 5 new OData crops (v4 detector, 2016-2018) were added to the 237 existing SH-era scenes (v3.1), three things happened:
+
+1. **Pearson degraded** (r: 0.73 → 0.20) — mixing detector versions creates a bimodal distribution
+2. **Spearman held** (rho: 0.74 → 0.66-0.71) — rank ordering preserved across versions
+3. **Structural change FLIPPED**: the "mega-ship consolidation" signal (declining ships-per-TEU) was an artifact of the v4/v3.1 scale mismatch, not a real economic trend
+
+**After calibration (v4 ÷ 2.59 to match v3.1 scale):**
+| Metric | Raw (mixed) | Calibrated | 2021+ only (pure v3.1) |
+|---|---|---|---|
+| eOPL vs bunker (Pearson r) | +0.20 n.s. | **+0.54** | **+0.72** |
+| eOPL vs bunker (Spearman rho) | +0.66 | **+0.71** | +0.74 |
+| YoY detrended | — | +0.05 n.s. | +0.46 |
+
+**Structural change (calibrated):**
+- Ships-per-TEU trend: +0.001/year (slightly increasing, not decreasing)
+- **Mega-ship consolidation hypothesis: NOT CONFIRMED** — was a detector-version artifact
+
+**Honest conclusions:**
+- The 2021+ pure-v3.1 era (n=57) is the gold standard: r=+0.72 levels, +0.46 detrended
+- Cross-version comparison requires rank-based statistics (Spearman) or per-scene calibration
+- The mega-ship hypothesis from the original scouting dossier is disproven by proper calibration
+- The detector-version confound is documented for anyone extending this work
