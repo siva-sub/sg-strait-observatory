@@ -163,3 +163,11 @@ Run history: v1 complete (old zones, no coverage gate) -> v2/v3 fixes (eOPL on B
 - Era split: S1A-only months (n=57) bunker levels 0.73; S1D era too short to split.
 - Diagnostics: wOPL-vs-container negative is a level artifact (YoY −0.09 n.s.); eOPL-vs-Passenger is level-only (detrended 0.11) — common trend, not mechanism.
 Saved: experiments/results/robustness_summary.json
+
+## Iteration 13 — out-of-sample nowcast test (offline, 2026-09-05)
+
+Train 2021-09..2023-01 (n=17), test 2024-01..2026-03 (n=27); target = YoY log-change in bunker sales.
+- Contemporaneous eOPL model: RMSE 0.120 vs mean-baseline 0.141 (skill +0.15); direction accuracy 67%; OOS r=+0.31 (p=0.115 — not significant at n=27).
+- Lagged eOPL (t-1): worse (sign 37%) — no lead time beyond data availability.
+- Persistence baseline (last month's YoY): RMSE 0.104 — STILL BEATS the satellite model. YoY bunker changes are highly autocorrelated.
+Verdict (honest): the index adds ~15% skill over the unconditional mean and points the right direction 2-in-3, but does not yet beat naive persistence; significance and persistence-beating need the 2015-2020 backfill (quota-gated). Saved: nowcast_oos.json.

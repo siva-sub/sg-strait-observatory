@@ -97,3 +97,7 @@
 
 - Port-limit GIS: package_search and /api/v1/datasets both return {}; scrape of MPA agency page yields no list. BLOCKED with evidence; zones stay approximations (README caveat already present).
 - Loop state: 9 staged (CDSE quota), 10 done (tanker mechanism), 11 done (robustness + COVID caveat), 12 blocked. All pushed.
+
+## 2026-09-05 (final cont.) — Iteration 13: OOS nowcast (honest)
+
+- Skill +0.15 vs mean baseline, 67% direction, OOS r=+0.31 (p=0.115, n.s.); persistence baseline still wins; lagged eOPL no lead. Documented; nowcast_oos.json saved. Executable iteration set exhausted; CDSE-gated items (backfill, TROPOMI, tif restore) await processing-unit replenishment.
