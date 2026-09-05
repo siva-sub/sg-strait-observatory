@@ -372,3 +372,49 @@ When the 5 new OData crops (v4 detector, 2016-2018) were added to the 237 existi
 - Cross-version comparison requires rank-based statistics (Spearman) or per-scene calibration
 - The mega-ship hypothesis from the original scouting dossier is disproven by proper calibration
 - The detector-version confound is documented for anyone extending this work
+
+## Iteration 23 — God's Eye View analysis (2026-09-05)
+
+**Source:** [bilawalsidhu/gods-eye-view](https://github.com/bilawalsidhu/gods-eye-view) — 17,737★, #1 GitHub Trending Aug 2026, praised by Brendan Eich.
+
+### Architecture (what makes it work)
+
+| Pattern | Implementation | Our status |
+|---|---|---|
+| 3D globe (Cesium + WebGL) | Photorealistic Earth, terrain, 3D models | MapLibre 2D (flat) |
+| Modular data layers | Each source = separate module with lifecycle + provenance + attribution | Monolithic |
+| Detection overlay | Screen-space corner brackets, label arbiter, density profiles, focus/deemphasis | Simple red circles |
+| Share links | Camera + style + layers + tracked target → URL hash | None |
+| AIS live vessels | AISStream.io WebSocket, 12K entities, type-coded | **Missing (no ground truth)** |
+| Server proxy | Node.js: CORS, key management, caching, rate limiting | None (static site) |
+| Voice control | AI agent integration | None |
+| GLSL sensor looks | CRT, NVG, FLIR/thermal, Noir, Snow shaders | None |
+| Scene director | Cinematic camera tours | None |
+| Attribution system | In-app data attribution lightbox, per-layer credits | README only |
+
+### Runtime dependencies (surprisingly lean)
+Only 6: `cesium`, `satellite.js`, `@mapbox/vector-tile`, `pbf`, `egm96-universal`, `mgrs`
+
+### What to adapt, ranked by impact/effort
+
+| # | What | Impact | Effort | Why |
+|---|---|---|---|---|
+| 1 | **AIS live vessels** (AISStream.io) | ★★★ | ~4h | Ground truth for SAR detections; vessel identity + type + dimensions; enables per-vessel anchorage dwell |
+| 2 | **Share links** (URL hash) | ★★★ | ~2h | Every view becomes a portfolio handoff; reviewers see exactly what you see |
+| 3 | **Detection overlay upgrade** | ★★ | ~4h | Corner brackets + type-coded colors + label arbiter instead of simple dots |
+| 4 | **Cesium 3D globe** | ★★★ | ~1-2d | Photorealistic 3D terrain, cinematic fly-through, the "wow factor" |
+| 5 | **Modular data layers** | ★★ | ~1d | Refactor to their pattern: each source = module with provenance |
+| 6 | **Server proxy** | ★ | ~4h | CORS, caching, key management — needed if we add AIS or Google tiles |
+| 7 | **Scene director** | ★ | ~4h | "Singapore Strait fly-through" showing detections over time |
+| 8 | **GLSL sensor looks** | ★ | ~2d | SAR-specific visualization (speckle view, incidence angle) |
+
+### Key insight for our project
+
+Their biggest lesson isn't the 3D globe — it's the **AIS integration**. AISStream.io provides free live vessel positions, which is the exact ground truth we've been missing. With AIS, our SAR detections become *validated* rather than just *claimed*. We could:
+- Match SAR detections to AIS positions within a radius
+- Compute detection precision/recall per scene
+- Identify vessel types (tanker vs container) from AIS metadata
+- Track anchorage dwell time per individual vessel
+- Add a "live" layer showing current vessel positions alongside historical SAR analysis
+
+This is the single highest-value addition to the Singapore Strait Observatory.
