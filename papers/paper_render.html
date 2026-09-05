@@ -1,0 +1,725 @@
+<html><head><style>
+body{font-family:Georgia,serif;max-width:800px;margin:40px auto;padding:0 20px;line-height:1.6;color:#222}
+h1{font-size:1.8em;border-bottom:2px solid #333;padding-bottom:10px}
+h2{font-size:1.4em;color:#1a365d;margin-top:2em;border-bottom:1px solid #ccc}
+h3{font-size:1.15em;color:#2c5282}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:.9em}
+th,td{border:1px solid #ccc;padding:6px 10px;text-align:left}
+th{background:#f0f4f8;font-weight:bold}
+img{max-width:100%;height:auto;display:block;margin:1em auto;border:1px solid #ccc}
+em{color:#555;font-size:.9em}
+code{background:#f5f5f5;padding:2px 4px;font-size:.9em}
+pre{background:#f5f5f5;padding:12px;overflow-x:auto;border-radius:4px}
+</style></head><body><h1>Sentinel-1 Anchorage Presence as an Early-Available Economic Indicator: Evidence from the Singapore Strait</h1>
+<p><strong>Draft status:</strong> v2 paper draft, 2026-09-06. All quantitative claims trace to the logged experimental record (<code>experiments/README.md</code> iterations 11–29; <code>autoresearch.jsonl</code> iterations 0–32; <code>CHANGELOG.md</code>). Negative results are reported as negative results.</p>
+<hr />
+<h2>Abstract</h2>
+<p>We test whether vessel presence in Singapore Strait anchorages, measured directly from free Sentinel-1 SAR, tracks official maritime-economic statistics before those statistics are published. A two-pass CA-CFAR detector (v3.1; the trimmed v4 upgrade is evaluated separately) over 248 accepted scenes (2016–2026, 237 of them in the analysis-grade 2021–2026 window) produces monthly anchorage counts by zone. Counts in the Eastern OPL (eOPL) anchorage — not total-area-of-interest counts — correlate with monthly bunker sales at Pearson r = +0.73 (n = 57 months spanning 2019-05..2026-03, p &lt; 0.001; Spearman ρ = +0.74; the pure ≥2021 subsample gives n=52, r=+0.72, ρ=+0.74; re-verified from perscene_join.csv), survive year-over-year detrending (r = +0.46), and are insensitive to wind: the partial correlation controlling for ERA5 monthly wind is +0.696. A satellite-only in-sample regression explains R² = 0.478 of bunker-sales variance (in-sample; the OOS test below limits this); adding official tanker arrivals raises this to 0.700 in-sample. The mechanism is strongly supported by two independent AIS sources: historical AIS shows the eOPL zone is a tanker anchorage (4,240 unique vessels in October 2023; 77% of anchored reports are tankers), and per-vessel dwell-time analysis shows a median tanker dwell of 24.9 hours (P25/P75: 10.6/77.6 h; 22,851 tanker-hours in one month — consistent with 12-48-hour bunkering operations). SAR-to-anchored-AIS matching reaches 84.2% at the grid-selected precision preset (72-point parameter grid, in-sample optimum on 2,145 anchored AIS vessels from October 2023). We report three negative results: an out-of-sample nowcast does not beat a persistence baseline (RMSE 0.104 vs 0.120); the H1-2024 congestion episode shows no anchorage-presence spike (consistent with MPA-reported berth waiting times, not anchorage-volume growth); and an apparent "mega-ship consolidation" trend was shown to be a detector-version artifact and is retracted. The surviving claim is modest and specific: zone-resolved SAR presence is a contemporaneous, weather-insensitive, independently validated indicator of bunkering activity, available ahead of official prints by roughly the reporting lag, but not yet a forecasting instrument.</p>
+<hr />
+<h2>1. Problem Statement</h2>
+<p>Singapore's port economy is large and fast-moving: 41.12M TEU of container throughput, S$1.3 trillion of merchandise trade, and a record 54.92 Mt of bunker sales in 2024, with roughly 90% of container volume being transshipment. Official monthly statistics for these series exist as open data, but arrive with a multi-week reporting lag (2–3 weeks in this project's accounting); the practical value of any satellite proxy is bounded by that lag, not by detection latency.</p>
+<p>Three gaps motivate this work:</p>
+<ol>
+<li><strong>Timeliness.</strong> Official series (container throughput, vessel arrivals, bunker sales) are published monthly, after the fact. A same-month proxy from radar, which works at night and through cloud, could compress that lag to days.</li>
+<li><strong>AIS coverage is not universal.</strong> Terrestrial AIS receiver networks have gaps. In our own live capture, the eOPL anchorage showed zero AIS vessels from one receiver network while SAR consistently detected ~97 bright targets there; a second, historical receiver network recorded 4,240 unique vessels in the same zone in one month. Any AIS-based trade indicator inherits receiver-coverage bias.</li>
+<li><strong>Existing trade-from-space pipelines are AIS-based.</strong> The IMF/World Bank nowcasting lineage (Cerdeiro et al. 2020; Arslanalp et al. 2021) derives port activity from AIS positions, not from raw SAR detection. No open, reproducible pipeline existed for SAR-native port-activity indices validated against official statistics — and the SAR-vessel-detection literature itself notes that most published methods have very limited validation (Kanjir et al. 2018).</li>
+</ol>
+<p>The question this paper answers is deliberately narrow: <strong>does a CFAR-detected, zone-resolved SAR presence index carry economic signal, and where exactly does it fail?</strong></p>
+<hr />
+<h2>2. Related Work</h2>
+<p><strong>Trade and port activity from space.</strong> Cerdeiro, Komáromi, Liu &amp; Sridhar (2020) built the end-to-end nowcasting recipe for the IMF: explicit port polygons, per-day vessel presence from AIS, monthly aggregation, validation against official statistics. We adopt their aggregation discipline (per-scene daily counts, days-observed transparency, base-100 index normalization) but replace AIS with raw SAR detection. Arslanalp, Koepke &amp; Verschuur (2021) applied satellite-derived daily port indicators to Pacific island trade. Verschuur, Koks &amp; Hall (2020, 2022) established that anchorage queue length is the congestion signal during disruptions — the hypothesis behind our H1-2024 case study (which returned a negative result; §4.8).</p>
+<p><strong>SAR vessel detection.</strong> El-Darymli et al. (2013) survey SAR-ATR and establish CFAR front-ends as standard practice; our local μ+kσ detector in the dB domain (k=5.5, 2.4 km window) sits within published norms. Grover, Kumar &amp; Kumar (2018) report that most Sentinel-1 false alarms originate on land — consistent with our experience that land masking dominated detector engineering. Greidanus et al. (2017) describe SUMO, the EMSA operational detector, validating CFAR + VV polarization for operational use. Ai et al. (2021) propose BTS-CFAR (bilateral trimmed-statistics CFAR) for complex ocean scenes; this is the direct precedent for our v4 two-pass trimmed CFAR. Zhou et al. (2026), surveying ~250 papers across fifty years of SAR ATR, identify guard-cell censoring as the key improvement for dense-target scenes — precisely the failure mode our vision QA found in v0/v3.1 (bright ships inflating local background statistics and masking neighbors).</p>
+<p><strong>SAR–AIS fusion.</strong> Rodger &amp; Guida (2020) and Galdelli et al. (2021) fuse SAR and AIS for dark-vessel detection. Our contribution runs the comparison the other way: AIS as ground truth for SAR detection quality (precision-type matching), and SAR as the sensor that sees into receiver gaps.</p>
+<p><strong>Bunkering from vessel behavior.</strong> Feng et al. (2020) estimate bunkering from AIS. Our finding that the eOPL zone is a tanker anchorage (77% of anchored AIS reports are tankers) connects the SAR index directly to this literature.</p>
+<p><strong>Methodological debts.</strong> The <code>strait</code> package design follows atlite (PyPSA) — the Cutout abstraction over weather data was transplanted to Sentinel-1 cutouts. Wind as a confound covariate (ERA5) also follows atlite's practice.</p>
+<hr />
+<h2>3. Data and Method</h2>
+<h3>3.1 Architecture</h3>
+<pre><code class="language-mermaid">flowchart TB
+  subgraph SRC[&quot;Data sources (all free)&quot;]
+    S1[&quot;Sentinel-1 GRD IW VV&lt;br/&gt;CDSE: OData + Sentinel Hub&lt;br/&gt;descending only, median 18 scenes/month&quot;]
+    OFF[&quot;Official statistics (data.gov.sg CKAN)&lt;br/&gt;TEU, vessel arrivals, arrivals by type,&lt;br/&gt;bunker sales by type&quot;]
+    WIND[&quot;Wind covariates&lt;br/&gt;ERA5 monthly (CDS) + Open-Meteo daily&quot;]
+    VNL[&quot;VIIRS nighttime lights v2.1/2.2 (EOG)&quot;]
+    AIS[&quot;AIS ground truth&lt;br/&gt;AISStream.io live + Mendeley Oct 2023&quot;]
+  end
+
+  subgraph DET[&quot;Detection (per scene)&quot;]
+    MASK[&quot;S2Coast-2023 land mask&lt;br/&gt;rasterized to 37 m grid&quot;]
+    V31[&quot;v3.1 CA-CFAR (dB domain)&lt;br/&gt;threshold = mu + 5.5 sigma, 64 px window&quot;]
+    V4[&quot;v4 two-pass trimmed CFAR&lt;br/&gt;censored background statistics&quot;]
+  end
+
+  subgraph AGG[&quot;Aggregation&quot;]
+    ZONES[&quot;Zone counts: port_core / eOPL / wOPL / other&quot;]
+    IDX[&quot;Monthly mean +/- CI, base-100 index&lt;br/&gt;coverage gate &gt;= 0.80, LOWCOV rejected&quot;]
+  end
+
+  subgraph VAL[&quot;Validation and econometrics&quot;]
+    ECON[&quot;Levels / YoY detrended correlation&lt;br/&gt;rolling windows, partial correlation, OLS&quot;]
+    NOW[&quot;Out-of-sample nowcast&lt;br/&gt;vs mean and persistence baselines&quot;]
+    AISM[&quot;SAR-to-AIS matching&lt;br/&gt;72-point parameter grid, 2,145 anchored vessels&quot;]
+  end
+
+  OUT[&quot;Outputs: strait package (PyPI),&lt;br/&gt;per-scene counts CSV, maps&quot;]
+
+  S1 --&gt; MASK --&gt; V31 --&gt; ZONES
+  MASK --&gt; V4 --&gt; ZONES
+  ZONES --&gt; IDX --&gt; ECON --&gt; NOW
+  OFF --&gt; ECON
+  WIND --&gt; ECON
+  VNL --&gt; ECON
+  ZONES --&gt; AISM
+  AIS --&gt; AISM
+  ECON --&gt; OUT
+</code></pre>
+<p><em>Figure 1. Pipeline architecture. Every arrow corresponds to a logged script or analysis (Appendix B).</em></p>
+<h3>3.2 Study area, zones, and satellite data</h3>
+<p>The area of interest is the Singapore Strait, 103.55–104.35°E, 1.05–1.55°N (2400×1500 px at ≈37 m/px). Archive reality, measured rather than assumed (CDSE OData query, 2026-09-04): 352 IW-GRD scenes from 2025-01-04 to 2026-09-03, median 18 scenes/month (max 24, min 2), <strong>all descending</strong> (<code>1SDV</code>, VV/VH), provider mix S1A (308) → S1D (44, from 2026-06). No ascending acquisitions exist for this AOI.</p>
+<p>Zone rectangles approximate named anchorage areas: <code>port_core</code>, <code>eastern_opl</code> (eOPL), <code>western_opl</code> (wOPL), and <code>other</code>. These are approximations — official MPA port-limit polygons were not available as open GIS at v0.1 scope, and this limitation propagates into every zone-level result (§5).</p>
+<p>The per-scene series (<code>perscene_counts.csv</code>) contains 386 scene records, of which 248 pass the ≥0.80 coverage gate (status OK); 138 are rejected as LOWCOV. The OK scenes split 11 pre-2021 (2016: 1, 2017: 2, 2018: 1, 2019: 1, 2020: 6) and 237 in 2021–2026 (2021: 61, 2022: 54, 2023: 4, 2024: 49, 2025: 55, 2026: 14). Pre-2021 history is sparse because the CDSE long-term archive throttles recall of older scenes; the analysis-grade window is 2021–2026. (Bookkeeping note: the run-6 log header records "243 accepted scenes (2021-2026)" while the CSV holds 237 OK scenes in 2021–2026 plus 6 in 2020; the discrepancy is unresolved in the log and flagged in Open Questions.)</p>
+<h3>3.3 Land mask</h3>
+<p>The v3.1 monthly pipeline used a temporal-median land mask (median &gt; −12 dB + dilation), ≈55% land. This was replaced by S2Coast-2023 (Sentinel-2-derived global high-water-line coastline, validated RMSE 17.4 m), rasterized from the Zenodo shapefile to the project grid: 49.7% land. The difference matters: the temporal median over-classified bright ships and shore infrastructure as land. S2Coast also removed a dependency cycle (the median mask required monthly composites, which were quota-blocked).</p>
+<h3>3.4 Vessel detection</h3>
+<p><strong>v3.1 CA-CFAR (dB domain).</strong> A pixel with intensity $x$ (dB) is a candidate if</p>
+<p>$$
+x \;&gt;\; T = \max!\big(\mu_B + k\,\sigma_B,\; -12\ \mathrm{dB}\big), \qquad k = 5.5,
+$$</p>
+<p>where $\mu_B, \sigma_B$ are the local mean and standard deviation over a 64 px (≈2.4 km) window, computed with land pixels filled by the global sea median (a neutral fill; earlier fill choices are a documented failure mode, §4.1). Candidates become detections via connected components with a 3-pixel minimum, and components larger than 25 px are <strong>peak-split</strong> so that dense anchored queues and azimuth-smeared "comet" movers are counted ship-by-ship.</p>
+<p><strong>v4 trimmed (censored) CFAR.</strong> In dense anchorages, ships inside the estimation window inflate $\mu_B$ and $\sigma_B$, raising the local threshold and suppressing neighboring detections — the exact miss found by vision QA. The fix follows the censored-statistics literature (Ai et al. 2021; guard-cell censoring per Zhou et al. 2026). Pass 1 computes a provisional global threshold from robust statistics,</p>
+<p>$$
+t_0 = \operatorname{median}(W) + K \cdot \mathrm{MAD}(W),
+$$</p>
+<p>pass 2 recomputes the local background only from sea-only pixels below $t_0$,</p>
+<p>$$
+B = {\, x \in W : x &lt; t_0 \,}, \qquad T = \tilde{\mu}_B + k\,\tilde{\sigma}_B,
+$$</p>
+<p>purely adaptive, with no absolute floor. On five OData test crops this raised detections from a mean of 558 (v3.1) to 1,441 (v4), a mean improvement of <strong>+159%</strong> (§4.1, Table 3).</p>
+<h3>3.5 Aggregation</h3>
+<p>Per-scene zone counts are aggregated to monthly means with confidence intervals and a base-100 index (base = first 12 months), following the Cerdeiro et al. (2020) recipe, with days-observed ($n$) transparency per month. Instantaneous presence is a <strong>stock</strong>; official throughput series are <strong>flows</strong> — the join is between a stock index and flow levels, which is why detrended and rank statistics carry the interpretive weight below.</p>
+<h3>3.6 Economic, weather, and night-lights covariates</h3>
+<ul>
+<li><strong>Official series</strong> (data.gov.sg CKAN, IDs in Appendix A): container throughput (TEU), vessel arrivals total and by type, bunker sales by type (377–6,032 rows depending on series). SingStat merchandise trade was inaccessible via CKAN at v0.1 (HTTP 403) and is left for v1.</li>
+<li><strong>Wind.</strong> ERA5 monthly mean wind, 132 months (2015-01–2025-12), 3×5 grid at 0.25°, via Copernicus CDS; and Open-Meteo daily maxima, 4,261 daily records → 140 monthly aggregates (2015-01–2026-08). The two capture different things: ERA5 mean wind tracks the monsoon/trade pattern; Open-Meteo daily maxima track weather extremes.</li>
+<li><strong>VIIRS nighttime lights (VNL v2.1/v2.2, EOG)</strong>, annual, 2015/2018/2021/2023 — an independent economic-activity proxy (port and refinery lighting).</li>
+</ul>
+<h3>3.7 AIS ground truth</h3>
+<ul>
+<li><strong>Live:</strong> AISStream.io WebSocket, 5-minute capture: 106 unique MMSI, 96 with positions, 63 anchored.</li>
+<li><strong>Historical:</strong> Mendeley "AIS Data from 11 ports around the globe", Singapore, October 2023, 610K records.</li>
+<li><strong>Parameter optimization:</strong> 72-combination grid (k × window × min-pixels) scored against 2,145 unique anchored AIS vessels (iteration 28).</li>
+</ul>
+<h3>3.8 Econometric analysis</h3>
+<p>Levels correlations use Pearson $r$ and Spearman $\rho$; detrending uses year-over-year (YoY) log-differences and 3-month moving averages of YoY (MA3-YoY). Weather confounding is addressed with the partial correlation</p>
+<p>$$
+r_{XY \cdot W} = \frac{r_{XY} - r_{XW}\, r_{YW}}{\sqrt{(1 - r_{XW}^2)(1 - r_{YW}^2)}} ,
+$$</p>
+<p>with $X$ = eOPL index, $Y$ = bunker sales, $W$ = wind. Nowcast skill is measured against baselines by</p>
+<p>$$
+\mathrm{skill} = 1 - \frac{\mathrm{RMSE}<em>{\text{model}}}{\mathrm{RMSE}</em>{\text{baseline}}} ,
+$$</p>
+<p>with baselines being the unconditional mean and persistence (last month's YoY change), evaluated strictly out-of-sample.</p>
+<h3>3.9 Reproducibility</h3>
+<p>The pipeline is packaged as <code>strait</code> (PyPI: <code>strait-observatory</code> 0.2.0; 36 tests passing; CI on Python 3.10–3.12), with a five-line API (<code>Cutout.prepare()</code> → <code>detect()</code> → <code>aggregate()</code> → AIS validation) modeled on atlite. Version 0.2.0 includes a working local-cache data pipeline (loads Sentinel-1 scenes from disk, validates against real data with 7,203 detections matching iteration 20 exactly) and parameter presets optimized via AIS ground truth.</p>
+<hr />
+<h2>4. Evidence</h2>
+<h3>4.1 Detector engineering: what failed and why</h3>
+<p>The detector went through five versions; the failure log is retained deliberately because each failure mode is a transferable lesson.</p>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Outcome</th>
+<th>Root cause / lesson</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v0</td>
+<td>Merged queues silently dropped by a 600 px component cap (Sept eOPL queue: ≥10 ships → 3 detections)</td>
+<td>never cap component size without splitting</td>
+</tr>
+<tr>
+<td>v2</td>
+<td>Invalid: 11.4k "ships" in one month</td>
+<td>min-filter background poisoned by a −40 dB land fill</td>
+</tr>
+<tr>
+<td>v2.1/2.2</td>
+<td>0 ships</td>
+<td>global z-score on a systematically positive anomaly; one NaN pixel poisoned medians</td>
+</tr>
+<tr>
+<td>v3</td>
+<td>stable but under-detecting near coast</td>
+<td>0 dB fill biased local thresholds; diagnosed by same-math A/B (6,142 vs 2,755 candidate pixels)</td>
+</tr>
+<tr>
+<td><strong>v3.1</strong></td>
+<td>frozen; stable 254–409 detections/month on monthly composites</td>
+<td>neutral fill (global sea median)</td>
+</tr>
+</tbody>
+</table>
+<p>Vision QA (two rounds, independent reviewer model) caught the v0 queue miss (round 1: ACCEPT-WITH-FIXES) and passed v3.1 on the September scene (10–12 markers on the queue), with one residual concern on a dim, perfectly regular ~60–100-speck grid in the northeast — consistent with fixed aquaculture/mooring rafts, i.e. plausibly correct exclusion.</p>
+<p>The trimmed-CFAR upgrade (v4), motivated by this QA finding and the censored-statistics literature, on five single-image OData crops:</p>
+<table>
+<thead>
+<tr>
+<th>Crop</th>
+<th>v3.1 detections</th>
+<th>v4 detections</th>
+<th>Improvement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2016-08</td>
+<td>551</td>
+<td>1,289</td>
+<td>+134%</td>
+</tr>
+<tr>
+<td>2017-09</td>
+<td>565</td>
+<td>1,342</td>
+<td>+138%</td>
+</tr>
+<tr>
+<td>2017-06-15</td>
+<td>522</td>
+<td>1,390</td>
+<td>+166%</td>
+</tr>
+<tr>
+<td>2018-09</td>
+<td>550</td>
+<td>1,644</td>
+<td>+199%</td>
+</tr>
+<tr>
+<td>2026-xx</td>
+<td>601</td>
+<td>1,538</td>
+<td>+156%</td>
+</tr>
+<tr>
+<td><strong>mean</strong></td>
+<td><strong>558</strong></td>
+<td><strong>1,441</strong></td>
+<td><strong>+159%</strong></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 3 (iteration 16). Mechanism: v3.1's local threshold p90 was +0.8 dB near bright ships; v4's trimmed statistics cap the threshold drift at 6.7 dB, recovering the masked neighbors. A +159% detection increase is an engineering metric, not an accuracy claim — accuracy is assessed against AIS in §4.3.</em></p>
+<p>The per-scene era added its own bug log (float centroid indices, no-data poisoning, a sea/land inversion, swapped <code>rowcol</code> arguments, CSV writer bugs), every one of which was caught by 2-day smoke tests — the operational rule that emerged is to never launch a long unattended run without a same-path smoke test.</p>
+<h3>4.2 Headline result: eOPL presence tracks the economy</h3>
+<p>The first econometric join at v0.1 (single monthly composite, n = 9 overlapping months) was a <strong>null</strong>: all p &gt; 0.18, Pearson ≈ 0.00 for satellite total vs container throughput. With per-scene processing and zone resolution, the result inverted — but only for the eOPL zone.</p>
+<table>
+<thead>
+<tr>
+<th>Series</th>
+<th>Levels r (n=57)</th>
+<th>YoY r (n=45)</th>
+<th>MA3-YoY r</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bunker sales</strong></td>
+<td><strong>+0.73</strong></td>
+<td><strong>+0.46</strong></td>
+<td><strong>+0.68</strong></td>
+</tr>
+<tr>
+<td>Vessel arrivals</td>
+<td>+0.64</td>
+<td>+0.37</td>
+<td>+0.46</td>
+</tr>
+<tr>
+<td>Container throughput (TEU)</td>
+<td>+0.57</td>
+<td>+0.33</td>
+<td>+0.49</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="eOPL vs bunker scatter" src="fig2_scatter.png" />
+<em>Figure 2. eOPL anchorage presence vs monthly bunker sales. Pearson r = +0.73, Spearman ρ = +0.74, n = 57. The pure ≥2021 subsample gives r = +0.72, n = 52.</em></p>
+<p><img alt="Monthly time series" src="fig3_timeseries.png" />
+<em>Figure 3. Monthly overlay of eOPL presence (red line, right axis) and bunker sales (blue bars, left axis).</em></p>
+<p><em>Table 4 (final run-6 series, 2021–2026, v3.1 detector; levels p &lt; 0.001). The headline +0.73 is recorded in the project verification log as the eOPL–bunker Spearman rank correlation; iteration 21's re-derivation on the same series gives Pearson +0.72 / Spearman +0.74, so the rank and level statistics agree at this magnitude across iterations. Total-AOI counts show </em><em>no</em><em> detrended signal — the zone choice is the whole game.</em></p>
+<p>The relationship is <strong>contemporaneous</strong>; the practical lead is satellite availability (scenes within days) versus the official print lag (~2–3 weeks in the surviving window), not a measured predictive lead (§4.8).</p>
+<p><img alt="SAR and AIS overlay" src="fig5_sar_ais_overlay.png" />
+<em>Figure 5. SAR detections (red dots, Aug 2026) overlaid with live AIS vessels (triangles, Sep 2026). Gold labels mark anchored tankers in the eOPL bunkering zone.</em></p>
+<h3>4.3 Mechanism and AIS validation</h3>
+<p><strong>The eOPL is a tanker anchorage, confirmed by two independent sensors.</strong> Historical AIS (October 2023, Mendeley): 4,240 unique vessels and 41,138 anchored reports in the eOPL zone; tanker types account for 31,653 anchored reports (<strong>77%</strong>), with type 80 (tanker, hazard A) alone at 22,578 (55%). October 2023 zone-by-zone:</p>
+<table>
+<thead>
+<tr>
+<th>Zone</th>
+<th>SAR (ships/scene)</th>
+<th>AIS unique/day</th>
+<th>AIS anchored/day</th>
+<th>SAR ÷ AIS-anchored</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>port_core</td>
+<td>118</td>
+<td>658</td>
+<td>502</td>
+<td>0.24</td>
+</tr>
+<tr>
+<td><strong>eastern_opl</strong></td>
+<td><strong>86</strong></td>
+<td><strong>296</strong></td>
+<td><strong>90</strong></td>
+<td><strong>0.96</strong></td>
+</tr>
+<tr>
+<td>western_opl</td>
+<td>71</td>
+<td>337</td>
+<td>147</td>
+<td>0.48</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 5 (iteration 25). The eOPL has the highest SAR-to-anchored-AIS ratio (0.96): the detector finds nearly as many targets as there are anchored AIS vessels. port_core's low ratio reflects intense underway traffic the anchored-vessel denominator does not count.</em></p>
+<p><strong>Live capture (iteration 24)</strong> found 106 vessels in 5 minutes (96 with positions, 63 anchored): 92 in port_core — against a SAR mean of 134.7 ships/scene, the same order of magnitude — including 10 named anchored tankers with Singapore-area destinations (e.g. FRONT ALTA, 330 m, dest. "SIN PEBGC"; VL PIONEER, 333 m, dest. "SGSIN PEBGC"). These are bunkering operations, the exact mechanism the econometrics identified. The same capture recorded <strong>zero</strong> AIS vessels in eOPL while SAR detects ~97 there: initially interpreted as an AIS gap, corrected by the historical data to a <strong>receiver-coverage gap</strong> in that particular network, not vessel absence. The revised framing: SAR detects "receiver-gap vessels," not "dark vessels."</p>
+<p><strong>Parameter optimization against AIS ground truth (iteration 28).</strong> A 72-point grid (k ∈ {4.0 … 6.5}, window ∈ {32 … 96 px}, min-px ∈ {3, 5, 7}) scored against 2,145 unique anchored AIS vessels produced three presets:</p>
+<table>
+<thead>
+<tr>
+<th>Preset</th>
+<th>k</th>
+<th>Window (px)</th>
+<th>Min px</th>
+<th>Detections</th>
+<th>AIS-matched</th>
+<th>Match rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>balanced (default)</td>
+<td>5.5</td>
+<td>64</td>
+<td>3</td>
+<td>1,340</td>
+<td>965</td>
+<td>72.0%</td>
+</tr>
+<tr>
+<td><strong>precision</strong></td>
+<td><strong>6.5</strong></td>
+<td><strong>32</strong></td>
+<td><strong>7</strong></td>
+<td><strong>505</strong></td>
+<td><strong>425</strong></td>
+<td><strong>84.2%</strong></td>
+</tr>
+<tr>
+<td>recall</td>
+<td>4.0</td>
+<td>64</td>
+<td>3</td>
+<td>2,008</td>
+<td>1,242</td>
+<td>61.9%</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 6 (iteration 28; raw grid in <code>parameter_optimization.csv</code>). Match rate = AIS-matched ÷ detections, i.e. the fraction of SAR detections that correspond to an anchored AIS vessel — a precision-type metric. Derived from the same logged counts, recall against the 2,145-vessel ground-truth pool spans ≈19.8% (precision preset) to ≈57.9% (recall preset); the log records the F1-optimal point at k=4.0/win=32/mp=3 with F1 = 0.77. The 84.2% headline is therefore a precision claim under a matching radius, not a census claim.</em></p>
+<p><strong>Per-vessel dwell time (iteration 29).</strong> The historical AIS data also supports a flow metric: per-vessel anchorage dwell time. In the eOPL, 298 unique tankers produced 346 dwell events with a <strong>median dwell of 24.9 hours</strong> (P25/P75: 10.6/77.6 h); 246 tankers stayed &gt;12 h and 174 stayed &gt;24 h, totalling 22,851 tanker-hours in the eOPL in October 2023. This is consistent with 12–48-hour bunkering operations and converts the stock metric (vessel count) into a flow metric (vessel-hours at anchor).</p>
+<h3>4.4 Weather robustness</h3>
+<p>Wind is the obvious confound — higher wind means brighter sea and more threshold crossings. It contaminates total counts and leaves the eOPL signal intact:</p>
+<table>
+<thead>
+<tr>
+<th>Comparison</th>
+<th>ERA5 monthly mean wind</th>
+<th>Open-Meteo daily-max wind</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vs total ships</td>
+<td>r = +0.54 (p &lt; 0.001)</td>
+<td>r = +0.37 (p = 0.004)</td>
+</tr>
+<tr>
+<td>vs eOPL ships</td>
+<td>r = +0.37 (p = 0.005)</td>
+<td><strong>r = +0.02 (p = 0.907)</strong></td>
+</tr>
+<tr>
+<td>vs bunker sales</td>
+<td>r = +0.14 (p = 0.32)</td>
+<td>r = −0.20 (p = 0.14)</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 7 (iterations 17–18). Interpretation: ERA5 mean wind carries the seasonal trade pattern (NE monsoon = more shipping and more wind); Open-Meteo daily maxima capture the extremes that generate SAR false positives. The eOPL zone is insensitive to the extreme-weather channel.</em></p>
+<p>Partial correlations and the detrended OLS confirm this directly:</p>
+<p>$$
+r(\text{eOPL}, \text{bunker}) = +0.691 \;\longrightarrow\; r(\text{eOPL}, \text{bunker} \mid \text{ERA5 wind}) = +0.696
+$$</p>
+<p>$$
+\Delta\,\text{bunker} = 0.014 + 0.449 \cdot \Delta\,\text{eOPL} + 0.041 \cdot \Delta\,\text{wind}, \quad n = 42
+$$</p>
+<p>with the eOPL coefficient dominant (t = 3.30) and wind negligible (t = 1.54, n.s.). With Open-Meteo as the control the partial is +0.75 against a raw +0.73. Monsoon seasonality is visible in total counts (NE monsoon mean 19.7 m/s wind / 394 total ships; SW 16.8 / 374; inter-monsoon 15.7 / 364) but nearly absent in eOPL (92.1 / 82.4 / 82.5).</p>
+<h3>4.5 Multi-sensor fusion</h3>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>R²</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bunker ~ eOPL (satellite only)</td>
+<td><strong>0.478</strong></td>
+</tr>
+<tr>
+<td>bunker ~ eOPL + ERA5 wind</td>
+<td>0.495</td>
+</tr>
+<tr>
+<td>bunker ~ eOPL + wind + tanker arrivals</td>
+<td><strong>0.700</strong></td>
+</tr>
+<tr>
+<td>container TEU ~ eOPL + wind</td>
+<td>0.305</td>
+</tr>
+<tr>
+<td>Δbunker ~ ΔeOPL + Δwind (detrended)</td>
+<td>0.284</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 8 (iteration 19). Satellite radar alone explains 48% of bunker-sales variance; the wind control adds 1.7 points (i.e. nothing — consistent with §4.4); official tanker arrivals bring it to 70%. The container result is weaker, as expected if eOPL measures bunkering rather than box throughput.</em></p>
+<p>The tanker mechanism has independent support: detrended tanker arrivals correlate with the eOPL index at r = +0.53 (iteration 10, verification-log entry).</p>
+<h3>4.6 Robustness battery (iteration 11)</h3>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Bunker</th>
+<th>Arrivals</th>
+<th>Container</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rolling 24-month Pearson (37 windows)</td>
+<td>span 0.26–0.71, median 0.52, <strong>never negative</strong>, latest 0.64</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>COVID exclusion (drop 2020-01..2021-06), levels</td>
+<td>0.77</td>
+<td>0.68</td>
+<td>0.66</td>
+</tr>
+<tr>
+<td>COVID exclusion, YoY</td>
+<td>0.29</td>
+<td>0.18</td>
+<td>0.27</td>
+</tr>
+<tr>
+<td>Log-diff detrending (method change)</td>
+<td>0.50</td>
+<td>0.41</td>
+<td>0.33</td>
+</tr>
+<tr>
+<td>S1A-only months (n = 57), levels</td>
+<td>0.73</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="Rolling correlation" src="fig4_rolling.png" />
+<em>Figure 4. Rolling 24-month Pearson correlation for eOPL vs bunker. Range 0.26–0.71, median 0.52, never negative across 37 windows.</em></p>
+<p><em>Table 9. Levels strengthen when the COVID swing is removed; detrended correlations weaken (0.46 → 0.29). Honest reading: part of the detrended strength rides the COVID swing; the levels correlation does not. The signal survives an alternative detrending method. Diagnostics on neighbors: wOPL-vs-container's negative level correlation is a trend artifact (YoY −0.09, n.s.); eOPL-vs-passenger-arrivals is level-only (detrended 0.11) — common trend, not mechanism.</em></p>
+<h3>4.7 Detector-version confound and a retraction (iteration 21)</h3>
+<p>Extending the timeline with five v4 OData crops (2016–2018) alongside 237 v3.1 Sentinel-Hub-era scenes broke the headline Pearson (0.73 → 0.20 n.s.) while Spearman held (0.74 → 0.66–0.71): rank ordering survives, the scale does not. A per-scene calibration (v4 ÷ 2.59 to match the v3.1 scale) restored Pearson to +0.54; the pure-v3.1 2021+ era gives +0.72 levels / +0.46 YoY and remains the gold standard.</p>
+<p>The same analysis <strong>retracted an earlier finding</strong>: the apparent decline in ships-per-TEU ("mega-ship consolidation") was an artifact of the v4/v3.1 scale mismatch. After calibration the ships-per-TEU trend is +0.001/year — flat to slightly increasing. <strong>The mega-ship consolidation hypothesis is not confirmed.</strong> Two operational rules follow: cross-version comparison requires rank statistics or per-scene calibration, and the confound is documented for anyone extending the series.</p>
+<p>Relatedly, the full-period (2015–2026, mixed eras) total-presence series shows a levels correlation of −0.68 with container throughput that is era-unstable (2015-19: −0.82; 2020-22: −0.27 n.s.; 2023-26: −0.13 n.s.) — a trend artifact, not economics. Era means fell 344 → 277 → 269 ships/overpass around 2020, confounded among COVID, Sentinel-1 processing-baseline drift, and any real fleet change; disentangling these was not possible and the earlier single-cause reading is withdrawn.</p>
+<h3>4.8 Negative results</h3>
+<p><strong>Out-of-sample nowcast does not beat persistence (iteration 13).</strong> Train 2021-09..2023-01 (n = 17), test 2024-01..2026-03 (n = 27), target = YoY log-change in bunker sales:</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>RMSE</th>
+<th>Direction accuracy</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unconditional mean</td>
+<td>0.141</td>
+<td>—</td>
+<td>baseline</td>
+</tr>
+<tr>
+<td>Contemporaneous eOPL</td>
+<td>0.120</td>
+<td>67%</td>
+<td>skill +0.15; OOS r = +0.31 (p = 0.115, n.s. at n = 27)</td>
+</tr>
+<tr>
+<td>Lagged eOPL (t−1)</td>
+<td>worse</td>
+<td>37%</td>
+<td>no lead beyond data availability</td>
+</tr>
+<tr>
+<td><strong>Persistence (last month's YoY)</strong></td>
+<td><strong>0.104</strong></td>
+<td>—</td>
+<td><strong>beats the satellite model</strong></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 10. YoY bunker changes are highly autocorrelated. The index adds ~15% skill over the unconditional mean and points the right direction two times in three, but does not beat naive persistence. Significance and persistence-beating need the 2015–2020 backfill (quota-gated).</em></p>
+<p><strong>H1-2024 congestion: no anchorage-presence spike (congestion case study, run-6).</strong> The 2024 congestion episode — container "bunching", 13.36M TEU in Jan–Apr 2024, extended berth waiting times, tanker/bulk largely unaffected — produced <strong>no</strong> spike in monthly anchorage presence; consistent with MPA-reported berth waiting times rather than anchorage-volume growth. A queue field is visible in port_core on single days (vision QA), but monthly means were flat to down. This is evidence against the simplest form of the "queue length = congestion signal" hypothesis at monthly resolution, and a caution for applying Verschuur-style queue metrics from monthly SAR aggregates.</p>
+<p><strong>Nulls kept on the record.</strong> The v0.1 econ join null (n = 9, all p &gt; 0.18) and the full-period total-AOI detrended null (all |r| ≤ 0.14, n.s., n = 125 in the first per-scene run) are retained above because they bound the claim: the signal is zone-specific and era-specific, not a generic "satellites see the economy" effect. The single surviving hint outside eOPL — bunker MA3-YoY ρ = +0.19 (p = 0.035) in the first per-scene run — is labeled hypothesis-only and was superseded by the zone-resolved analysis.</p>
+<h3>4.9 Independent corroboration: VIIRS nighttime lights</h3>
+<table>
+<thead>
+<tr>
+<th>Year</th>
+<th>Total radiance</th>
+<th>YoY</th>
+<th>Lit pixels</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2015</td>
+<td>299,978</td>
+<td>—</td>
+<td>14,884</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>336,490</td>
+<td>+12.2%</td>
+<td>15,522</td>
+</tr>
+<tr>
+<td>2021</td>
+<td>340,042</td>
+<td><strong>+1.1%</strong></td>
+<td>16,079</td>
+</tr>
+<tr>
+<td>2023</td>
+<td>345,413</td>
+<td>+1.6%</td>
+<td>15,245</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 11 (iteration 16; VNL v2.1/v2.2, EOG). The brightest pixel is Jurong Island (petrochemical complex; 276–376 nW/cm²/sr across years). Growth decelerated from +12% (2015→18) to +1–2% (2018→23). Annual anchor points co-move — 2021: radiance 340,042 ↔ eOPL 78.4 ↔ bunker 4,170 kt; 2023: 345,413 ↔ 85.5 ↔ 4,378 — but VNL's annual cadence cannot support a monthly model; this is corroboration, not independent confirmation.</em></p>
+<h3>4.10 Reference series: v3.1 monthly composites</h3>
+<p>For calibration context, the frozen v3.1 detector on 12 monthly composites (2025-09..2026-08) yields 254–409 total detections/month (eOPL 8–27, port_core 91–138, wOPL 31–67); full table in <code>experiments/README.md</code>. Instantaneous presence of ~250–400 large vessels is the right order of magnitude for a port whose monthly <em>arrivals</em> number in the thousands with ~90% transshipment traffic.</p>
+<hr />
+<h2>5. Limitations</h2>
+<ol>
+<li><strong>Era and sample size.</strong> Analysis-grade data cover 2021–2026 with n = 43–57 months depending on series. Pre-2021 history is 11 scenes; the 2015–2020 backfill is blocked by CDSE long-term-archive recall limits. Statistical power at these n is modest; p-values near threshold should be read accordingly.</li>
+<li><strong>Single pass direction.</strong> All acquisitions are descending. Azimuth smearing at 37 m/px means detection size is not a reliable vessel-length proxy, and no ascending/descending pair exists for motion or dwell estimation.</li>
+<li><strong>Zone geometry is approximate.</strong> Rectangle proxies for port-limit polygons; every zone-level number inherits this uncertainty. Zone choice is also the decisive analytical degree of freedom (total-AOI counts carry no detrended signal) — a result that is itself a warning about how sensitive such indices are to polygon definition.</li>
+<li><strong>Detector-version confound.</strong> v3.1 and v4 differ in scale by a factor of 2.59 (empirically calibrated). Cross-version pooling without calibration or rank statistics destroys the Pearson signal. Any extension must handle this.</li>
+<li><strong>The nowcast claim is negative.</strong> The index does not beat persistence out-of-sample and shows no predictive lead beyond data availability. "Leading indicator" in the title means available-ahead-of-print, not forecast-ahead-of-outcome.</li>
+<li><strong>Validation is precision-type, not census-type.</strong> The 84.2% AIS match is the fraction of detections matched to anchored AIS vessels; recall against the 2,145-vessel pool is far lower (≈20–58% by preset). Detection recall in the strict sense is unmeasured; small/dim vessels and the excluded aquaculture grids are not characterized.</li>
+<li><strong>Single port.</strong> Generalization to other anchorages is untested; the <code>strait</code> package makes the test cheap but it has not been run.</li>
+<li><strong>Known uncharacterized failure modes.</strong> Bridge false positives (1 observed), dim regular grids (aquaculture/mooring rafts, excluded by design but AIS spot-check still queued), subswath seams.</li>
+<li><strong>Bookkeeping.</strong> Run-6 log header ("243 accepted scenes 2021–2026") vs CSV (237 OK scenes 2021–2026) differs by six scenes; unresolved in the log (see Open Questions).</li>
+</ol>
+<hr />
+<h2>6. Conclusion</h2>
+<p>A free, open, reproducible Sentinel-1 pipeline produces a zone-resolved vessel-presence index for the Singapore Strait whose Eastern-OPL component tracks monthly bunker sales at Pearson r = +0.73 (Spearman ρ = +0.74) (n = 57, 2019-05..2026-03; ≥2021 subsample n=52, r=+0.72), survives detrending and a wind control (partial r = +0.696), explains R² = 0.478 of bunker-sales variance alone and 0.700 with official tanker data, and whose mechanism — a tanker anchorage — is confirmed by independent historical AIS (77% tanker anchored reports, 4,240 unique vessels in one month) and by an 84.2%-precision AIS match at the tuned preset.</p>
+<p>Equally important is what did not survive: the index does not beat persistence out-of-sample; the 2024 congestion episode was invisible in monthly presence counts; the mega-ship consolidation trend was a detector-version artifact and is retracted; and the signal exists only in the right zone — total-area counts are noise. The claim this paper defends is therefore narrow: <strong>SAR-native anchorage presence is a contemporaneous, weather-insensitive, independently validated, freely available indicator of bunkering activity — an availability lead over official prints, not (yet) a forecasting edge.</strong></p>
+<p>Everything needed to check or extend this — detector code, 248-scene series, 72-point parameter grid, package on PyPI — is open. The highest-value next steps are the 2015–2020 backfill (power for the nowcast test), a second port (generalization), and the TROPOMI emissions module (per-corridor NO₂ attribution).</p>
+<hr />
+<h2>Open Questions</h2>
+<ol>
+<li><strong>Does the persistence barrier break with more data?</strong> The OOS test (n = 27) cannot resolve significance at r = +0.31; the quota-gated 2015–2020 backfill is the decisive experiment.</li>
+<li><strong>Where do the 243-vs-237 accepted-scene counts diverge?</strong> Likely the six 2020 scenes, but the log does not say; needs a recount against the CSV before any revision.</li>
+<li><strong>What is in the eOPL that the receiver network misses?</strong> Live capture showed 0 AIS vessels from one network, 4,240 from another in the same zone — the receiver-gap geometry (whose receivers, what range) is uncharacterized.</li>
+<li><strong>Detection recall is unmeasured.</strong> The grid search optimizes a precision-type match rate; a per-scene recall estimate against full AIS (not just anchored vessels) is queued.</li>
+<li><strong>Are the excluded dim regular grids really aquaculture?</strong> Vision QA says plausibly; the AIS spot-check has not been run.</li>
+<li><strong>Do official port-limit polygons exist as open GIS</strong> (MPA GeoHub / OCEANS-X), replacing the rectangle zones and removing the largest geometric uncertainty?</li>
+<li><strong>TROPOMI NO₂ corridor module</strong> (planned in the dossier) is untested; plume attribution at 3.5×5.5 km over a 10–20 km-wide strait remains an open engineering problem.</li>
+<li><strong>SingStat merchandise-trade series</strong> remain inaccessible via CKAN (HTTP 403); Table Builder API is the untested route.</li>
+<li><strong>Processing-baseline drift vs real fleet change</strong> around the 2020 era break (means 344 → 277 → 269) cannot be separated with current data.</li>
+</ol>
+<hr />
+<h2>Appendix A: Sources (direct URLs)</h2>
+<p><strong>Satellite data and infrastructure</strong>
+- Copernicus Data Space Ecosystem: https://dataspace.copernicus.eu
+- Sentinel-1 collection: https://dataspace.copernicus.eu/data-collections/copernicus-sentinel-missions/sentinel-1
+- CDSE documentation/FAQ (quotas): https://documentation.dataspace.copernicus.eu/FAQ.html
+- Copernicus Browser: https://browser.dataspace.copernicus.eu
+- S2Coast-2023 land mask: Zenodo, open (identifier as logged in <code>experiments/README.md</code> iteration 16)
+- VIIRS Nighttime Lights v2.1/v2.2: Earth Observation Group (auth-required download; annual composites 2015–2023)</p>
+<p><strong>Official statistics (data.gov.sg, CKAN resource IDs)</strong>
+- Container Throughput Monthly (TEU): <code>d_da030f7028200d19ffcbe4a2d71af39c</code> — https://data.gov.sg/datasets/d_da030f7028200d19ffcbe4a2d71af39c/view
+- Cargo Throughput (MPA collection 390): https://data.gov.sg/collections/390/view
+- Vessel Arrivals (&gt;75 GT) Total: <code>d_d48c5a038904f6da3c603cd854b6c191</code> — https://data.gov.sg/datasets/d_d48c5a038904f6da3c603cd854b6c191/view
+- Vessel Arrivals by Type: <code>d_8f264219109e61fffa87ac64dd5a9a65</code> — https://data.gov.sg/datasets/d_8f264219109e61fffa87ac64dd5a9a65/view
+- Bunker Sales Breakdown Monthly: <code>d_4f5abbf4486bf8e52bbed3be56dde562</code> — https://data.gov.sg/datasets/d_4f5abbf4486bf8e52bbed3be56dde562/view
+- Merchandise Trade Monthly SA: <code>d_c41b1f16d0847996b1dcfd2ded0b2d91</code> — https://data.gov.sg/datasets/d_c41b1f16d0847996b1dcfd2ded0b2d91/view
+- MPA Port Statistics: https://www.mpa.gov.sg/who-we-are/newsroom-resources/research-and-statistics/port-statistics
+- MPA Bunkering statistics: https://www.mpa.gov.sg/port-marine-ops/marine-services/bunkering/bunkering-statistics
+- MPA on 2024 berth waiting times: https://www.mpa.gov.sg/media-centre/details/in-response-to-media-queries-on--vessels--extended-waiting-times-for-berths-in-the-port-of-singapore
+- EnterpriseSG 2024 trade review (MR 004/25): https://www.enterprisesg.gov.sg/-/media/esg/files/media-centre/media-releases/2025/february/mr00425_review-of-2024-trade-performance.pdf
+- Straits Times 2024 port records: https://www.straitstimes.com/singapore/transport/singapores-port-sets-new-records-for-vessel-arrivals-shipping-containers-handled-in-2024
+- Offshore-Energy bunker sales 2024: https://www.offshore-energy.biz/mpa-alternative-bunker-fuel-sales-exceed-1-million-tonnes-in-2024
+- Seatrade-Maritime strait traffic: https://www.seatrade-maritime.com/tankers/malacca-strait-vessel-traffic-at-record-levels-in-2025</p>
+<p><strong>Weather and AIS</strong>
+- Copernicus Climate Data Store (ERA5): https://cds.climate.copernicus.eu
+- Open-Meteo historical archive API: https://open-meteo.com (historical API, no auth)
+- AISStream.io (live WebSocket): https://aisstream.io
+- Mendeley Data, "AIS Data from 11 ports around the globe" (Singapore subset, Oct 2023)</p>
+<p><strong>Literature (with URLs where logged)</strong>
+- Cerdeiro, Komáromi, Liu &amp; Sridhar (2020), <em>World Seaborne Trade in Real Time</em>, IMF SDN: https://www.elibrary.imf.org/downloadpdf/journals/001/2020/057/001.2020.issue-057-en.xml
+- Arslanalp, Koepke &amp; Verschuur (2021), <em>Tracking trade from space</em> (Pacific island countries)
+- Verschuur, Koks &amp; Hall (2022), <em>Ports' criticality…</em>, Nature Communications: https://www.nature.com/articles/s41467-022-32070-0 ; (2020) COVID maritime trade losses, arXiv 2010.15907
+- Chico, Cordel, Mariasingham &amp; Tan (2025), PLOS ONE: https://doi.org/10.1371/journal.pone.0320129
+- El-Darymli et al. (2013), SAR-ATR survey, JARS
+- Kanjir, Greidanus &amp; Oštir (2018), RSE vessel-detection survey
+- Grover, Kumar &amp; Kumar (2018), ISPRS Annals, ship detection from Sentinel-1
+- Greidanus et al. (2017), SUMO ship detector, Remote Sensing 9(3):246
+- Iervolino &amp; Guida (2017), GLRT detector, IEEE JSTARS: https://ieeexplore.ieee.org/abstract/document/7927377
+- Ai et al. (2021), BTS-CFAR, IEEE TAES
+- Zhou et al. (2026), <em>Fifty Years of SAR ATR</em>, arXiv 2509.22159: https://arxiv.org/abs/2509.22159
+- Rodger &amp; Guida (2020); Galdelli et al. (2021) — SAR–AIS fusion for dark vessels
+- Feng et al. (2020) — bunkering statistics from AIS
+- Georgoulias et al. (2020), ship NO₂ plumes, ERL: https://iopscience.iop.org/article/10.1088/1748-9326/abc445
+- Batista et al. (2025), Remote Sensing 17(13):2202: https://www.mdpi.com/2072-4292/17/13/2202
+- atlite (PyPSA): https://github.com/PyPSA/atlite</p>
+<p><strong>Software</strong>
+- <code>strait</code> package: https://pypi.org/project/strait-observatory/0.2.0/</p>
+<hr />
+<h2>Appendix B: Provenance map (claim → logged iteration / artifact)</h2>
+<table>
+<thead>
+<tr>
+<th>Claim in this paper</th>
+<th>Iteration</th>
+<th>Artifact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ρ = +0.73 eOPL–bunker (n=57); YoY +0.46; MA3 +0.68</td>
+<td>run 6 / iters 10–11</td>
+<td><code>econ_join.csv</code>, verification log</td>
+</tr>
+<tr>
+<td>Tanker arrivals detrended r = +0.53</td>
+<td>iter 10</td>
+<td>verification log</td>
+</tr>
+<tr>
+<td>R² = 0.478 / 0.495 / 0.700 / 0.305 / 0.284</td>
+<td>iter 19</td>
+<td>fusion model table</td>
+</tr>
+<tr>
+<td>Partial r +0.696 (ERA5), +0.75 (Open-Meteo); OLS coefs</td>
+<td>iters 17–18</td>
+<td>wind tables, detrended OLS</td>
+</tr>
+<tr>
+<td>Rolling windows 0.26–0.71, median 0.52; COVID-exclusion; log-diff</td>
+<td>iter 11</td>
+<td><code>results/robustness_summary.json</code></td>
+</tr>
+<tr>
+<td>OOS nowcast: RMSE 0.120 / 0.141 / 0.104; skill +0.15; 67% / 37%</td>
+<td>iter 13</td>
+<td><code>nowcast_oos.json</code></td>
+</tr>
+<tr>
+<td>Trimmed CFAR +159% (558 → 1,441)</td>
+<td>iter 16</td>
+<td>crop comparison table</td>
+</tr>
+<tr>
+<td>S2Coast mask 49.7% vs ~55%; RMSE 17.4 m</td>
+<td>iters 15–16</td>
+<td>mask raster</td>
+</tr>
+<tr>
+<td>VNL +12.2% / +1.1% / +1.6%; anchors 2021/2023</td>
+<td>iters 16, 19</td>
+<td>VNL crop tables</td>
+</tr>
+<tr>
+<td>Live AIS: 106/96/63; 92 port_core; 0 eOPL; 10 tankers</td>
+<td>iter 24</td>
+<td><code>ais_snapshot_5min.json</code></td>
+</tr>
+<tr>
+<td>Historical AIS: 4,240 vessels; 41,138 reports; 77% tankers; ratio 0.96</td>
+<td>iter 25</td>
+<td>Mendeley analysis</td>
+</tr>
+<tr>
+<td>Grid search 72 combos; 84.2% / 72.0% / 61.9%; 2,145 vessels</td>
+<td>iter 28</td>
+<td><code>results/parameter_optimization.csv</code></td>
+</tr>
+<tr>
+<td>Calibration v4÷2.59; mega-ship retracted; +0.001/yr ships-per-TEU</td>
+<td>iter 21</td>
+<td>extended-timeline analysis</td>
+</tr>
+<tr>
+<td>H1-2024 no presence spike</td>
+<td>iter 8</td>
+<td><code>congestion_2024.py</code></td>
+</tr>
+<tr>
+<td>v0.1 null (n=9, p&gt;0.18)</td>
+<td>week 3 log</td>
+<td><code>econ_join.csv</code></td>
+</tr>
+<tr>
+<td>Full-period total-AOI null; era means 344→277→269</td>
+<td>per-scene run 1</td>
+<td><code>perscene_counts.csv</code></td>
+</tr>
+<tr>
+<td>248 OK scenes / 237 in 2021–2026 / 138 LOWCOV</td>
+<td>this draft, counted</td>
+<td><code>perscene_counts.csv</code></td>
+</tr>
+<tr>
+<td>352 scenes; median 18/month; descending-only</td>
+<td>dossier §3.1</td>
+<td><code>notes/discovery/cdse_s1_feasibility.json</code></td>
+</tr>
+<tr>
+<td>Monthly composites 254–409/month</td>
+<td>v3.1 freeze</td>
+<td><code>monthly_counts_v3.csv</code></td>
+</tr>
+</tbody>
+</table></body></html>

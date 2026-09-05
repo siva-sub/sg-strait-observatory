@@ -200,10 +200,10 @@ The first econometric join at v0.1 (single monthly composite, n = 9 overlapping 
 | Container throughput (TEU) | +0.57 | +0.33 | +0.49 |
 
 ![eOPL vs bunker scatter](fig2_scatter.png)
-*Figure 2. eOPL anchorage presence vs monthly bunker sales. Pearson r = +0.73, Spearman ρ = +0.74, n = 57. The pure ≥2021 subsample gives r = +0.72, n = 52.*
+*Figure 2. eOPL anchorage presence (mean ships per SAR scene) vs monthly bunker sales, with OLS fit and 95% CI. Pearson r = +0.73, Spearman ρ = +0.74, n = 57 (2019-05..2026-03); ≥2021 subsample r = +0.72, n = 52. Four months exceed |z| > 2 on the fit residuals (labelled); excluding them gives r = +0.78 (n = 53).*
 
 ![Monthly time series](fig3_timeseries.png)
-*Figure 3. Monthly overlay of eOPL presence (red line, right axis) and bunker sales (blue bars, left axis).*
+*Figure 3. Monthly bunker sales (blue bars, top) and eOPL anchorage presence (red, bottom) on a calendar axis. The series covers 57 of 83 calendar months; the line is broken and the four sampling gaps (2019-06..2020-04, 2020-06/07, 2020-11/12, 2023-02..2023-12) are shaded grey.*
 
 
 *Table 4 (final run-6 series, 2021–2026, v3.1 detector; levels p < 0.001). The headline +0.73 is recorded in the project verification log as the eOPL–bunker Spearman rank correlation; iteration 21's re-derivation on the same series gives Pearson +0.72 / Spearman +0.74, so the rank and level statistics agree at this magnitude across iterations. Total-AOI counts show **no** detrended signal — the zone choice is the whole game.*
@@ -211,7 +211,7 @@ The first econometric join at v0.1 (single monthly composite, n = 9 overlapping 
 The relationship is **contemporaneous**; the practical lead is satellite availability (scenes within days) versus the official print lag (~2–3 weeks in the surviving window), not a measured predictive lead (§4.8).
 
 ![SAR and AIS overlay](fig5_sar_ais_overlay.png)
-*Figure 5. SAR detections (red dots, Aug 2026) overlaid with live AIS vessels (triangles, Sep 2026). Gold labels mark anchored tankers in the eOPL bunkering zone.*
+*Figure 5. SAR detections (red dots, Sentinel-1 IW GRD 2026-08, n = 371) overlaid with live AIS vessels from AISStream.io (2026-09): blue triangles moving, green triangles anchored (< 0.5 kn). Numbered gold circles mark anchored tankers (ship types 80-89, key at bottom right); leader lines indicate circles displaced for legibility. Zones: Eastern OPL (gold), Port Core (cyan), Western OPL (orange).*
 
 
 ### 4.3 Mechanism and AIS validation
@@ -282,14 +282,14 @@ The tanker mechanism has independent support: detrended tanker arrivals correlat
 
 | Test | Bunker | Arrivals | Container |
 |---|---|---|---|
-| Rolling 24-month Pearson (37 windows) | span 0.26–0.71, median 0.52, **never negative**, latest 0.64 | — | — |
+| Rolling 24-observation Pearson (34 windows) | span 0.26–0.71, median 0.52, never negative, latest 0.64; 13 windows below the r = 0.404 significance threshold (n = 24) | — | — |
 | COVID exclusion (drop 2020-01..2021-06), levels | 0.77 | 0.68 | 0.66 |
 | COVID exclusion, YoY | 0.29 | 0.18 | 0.27 |
 | Log-diff detrending (method change) | 0.50 | 0.41 | 0.33 |
 | S1A-only months (n = 57), levels | 0.73 | — | — |
 
 ![Rolling correlation](fig4_rolling.png)
-*Figure 4. Rolling 24-month Pearson correlation for eOPL vs bunker. Range 0.26–0.71, median 0.52, never negative across 37 windows.*
+*Figure 4. Rolling Pearson correlation (24-observation window) for eOPL vs bunker, with Fisher-z 95% CI. Range 0.26–0.71, median 0.52, 34 windows; 13 fall below the two-sided 5% significance threshold (r = 0.404 at n = 24). No window is negative.*
 
 
 *Table 9. Levels strengthen when the COVID swing is removed; detrended correlations weaken (0.46 → 0.29). Honest reading: part of the detrended strength rides the COVID swing; the levels correlation does not. The signal survives an alternative detrending method. Diagnostics on neighbors: wOPL-vs-container's negative level correlation is a trend artifact (YoY −0.09, n.s.); eOPL-vs-passenger-arrivals is level-only (detrended 0.11) — common trend, not mechanism.*
