@@ -112,15 +112,18 @@ class Cutout:
         logger.info("Prepared %d scenes", len(self._scenes))
         return self
 
-    def detect(self, method: str = "trimmed_cfar", **kwargs) -> gpd.GeoDataFrame:
+    def detect(self, method: str = "trimmed_cfar", preset: str = "balanced", **kwargs):
         """Detect vessels in prepared scenes.
 
         Parameters
         ----------
         method : str
             "trimmed_cfar" (v4, recommended) or "cfar" (v3.1)
+        preset : str
+            Parameter preset: "balanced" (default), "precision", or "recall".
+            Optimized via AIS ground-truth grid search.
         **kwargs
-            Passed to the detector (k, window, min_pixels, etc.)
+            Override individual parameters (k, window, min_pixels).
 
         Returns
         -------
@@ -130,7 +133,12 @@ class Cutout:
         if not self._scenes:
             raise RuntimeError("Call cutout.prepare() before detect()")
 
-        from .detect import detect_vessels
+        from .detect import detect_vessels, PRESETS
+
+        # Apply preset defaults, allow kwargs to override
+        preset_params = PRESETS.get(preset, {}).copy()
+        preset_params.pop("description", None)
+        preset_params.update({k_: v for k_, v in kwargs.items() if k_ in ("k", "window", "min_pixels")})
 
         self._detections = detect_vessels(
             scenes=self._scenes,
@@ -139,9 +147,9 @@ class Cutout:
             method=method,
             bounds=self.bounds,
             shape=self._shape,
-            **kwargs,
+            **preset_params,
         )
-        logger.info("Detected %d vessels", len(self._detections))
+        logger.info("Detected %d vessels (preset=%s)", len(self._detections), preset)
         return self._detections
 
     def aggregate(
@@ -227,7 +235,11 @@ class Cutout:
         logger.info("Demo mode: %d synthetic scenes", len(self._scenes))
 
     def _prepare_sentinel1(self):
-        """Download and process real Sentinel-1 scenes."""
+        """Download and process real Sentinel-1 scenes.
+
+        Tries local cache first (faster, no credentials needed).
+        Falls back to CDSE download if no cache found.
+        """
         from .data.sentinel1 import prepare_sentinel1
 
         scenes, dates, land_mask = prepare_sentinel1(
@@ -235,6 +247,7 @@ class Cutout:
             time_range=(str(self.time.start), str(self.time.stop)),
             cache_dir=self.path,
             shape=self._shape,
+            use_local=True,
         )
         self._scenes = scenes
         self._dates = dates

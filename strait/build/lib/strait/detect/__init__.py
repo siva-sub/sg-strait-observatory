@@ -23,6 +23,24 @@ logger = logging.getLogger(__name__)
 CLASSIC_CFAR = "cfar"
 TRIMMED_CFAR = "trimmed_cfar"
 
+# Parameter presets optimized via AIS ground-truth grid search (iteration 28)
+# Grid: 72 combinations tested against 2,145 unique anchored AIS vessels
+# See experiments/results/parameter_optimization.csv
+PRESETS = {
+    "balanced": {
+        "k": 5.5, "window": 64, "min_pixels": 3,
+        "description": "Economic indicators — good precision/volume balance (72% AIS match, F1=0.69)",
+    },
+    "precision": {
+        "k": 6.5, "window": 32, "min_pixels": 7,
+        "description": "Dark vessel / enforcement — highest confidence (84% AIS match)",
+    },
+    "recall": {
+        "k": 4.0, "window": 64, "min_pixels": 3,
+        "description": "Comprehensive census — maximum detections (2008, 62% AIS match)",
+    },
+}
+
 # Default parameters
 DEFAULT_K = 5.5
 DEFAULT_WINDOW = 64       # pixels (~2.4 km at 37 m/px)
@@ -125,7 +143,13 @@ def _classic_threshold(db, sea, k, window):
 
 
 def _trimmed_threshold(db, sea, k, window):
-    """v4: two-pass censored statistics (from SAR literature)."""
+    """v4: two-pass censored statistics (from SAR literature).
+
+    Guards against degenerate cases:
+    - Minimum MAD floor (prevents provisional threshold collapsing to median
+      when background is perfectly uniform, e.g., synthetic test scenes)
+    - Minimum background fraction (ensures enough pixels for stable stats)
+    """
     valid = sea & (db > SEA_FLOOR_DB)
     if valid.sum() < 100:
         return np.full_like(db, 999.0)
@@ -133,9 +157,16 @@ def _trimmed_threshold(db, sea, k, window):
     vals = db[valid]
     med = float(np.median(vals))
     mad = float(np.median(np.abs(vals - med))) * 1.4826
+    # Guard: floor MAD to prevent degenerate threshold on uniform backgrounds
+    MIN_MAD_DB = 0.5  # at least 0.5 dB spread in the background
+    mad = max(mad, MIN_MAD_DB)
     provisional = med + k * mad
 
     bg = valid & (db < provisional)
+    # Guard: ensure at least 30% of valid sea pixels remain as background
+    if bg.sum() < valid.sum() * 0.3:
+        bg = valid  # fall back to all valid pixels (equivalent to classic CFAR)
+
     x = np.where(bg, db, 0.0)
     x2 = np.where(bg, db * db, 0.0)
     v = bg.astype(np.float32)
@@ -144,6 +175,9 @@ def _trimmed_threshold(db, sea, k, window):
     mu = ndimage.uniform_filter(x, window) / vf
     var = ndimage.uniform_filter(x2, window) / vf - mu * mu
     sig = np.sqrt(np.clip(var, 0, 400))
+    # Guard: minimum sigma to prevent zero-variance thresholds
+    MIN_SIG_DB = 0.1
+    sig = np.maximum(sig, MIN_SIG_DB)
     return mu + k * sig
 
 

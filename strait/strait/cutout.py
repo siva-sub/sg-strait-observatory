@@ -235,7 +235,11 @@ class Cutout:
         logger.info("Demo mode: %d synthetic scenes", len(self._scenes))
 
     def _prepare_sentinel1(self):
-        """Download and process real Sentinel-1 scenes."""
+        """Download and process real Sentinel-1 scenes.
+
+        Tries local cache first (faster, no credentials needed).
+        Falls back to CDSE download if no cache found.
+        """
         from .data.sentinel1 import prepare_sentinel1
 
         scenes, dates, land_mask = prepare_sentinel1(
@@ -243,6 +247,7 @@ class Cutout:
             time_range=(str(self.time.start), str(self.time.stop)),
             cache_dir=self.path,
             shape=self._shape,
+            use_local=True,
         )
         self._scenes = scenes
         self._dates = dates
