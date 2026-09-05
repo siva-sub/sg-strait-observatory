@@ -451,3 +451,40 @@ SAR port_core mean = 134.7 ships/scene; AIS = 92 vessels right now (within the s
 - + 6 more with destinations "SGSIN", "PWBGA,SG", "SINGAPORE AWPA"
 
 These are **bunkering operations** — the exact mechanism our econometric model identified. The AIS data confirms: anchored tankers with Singapore-area destinations ARE the signal.
+
+## Iterations 24-25 — AIS integration + historical validation (2026-09-05)
+
+### Iteration 24: Live AIS (AISStream.io)
+- 106 vessels in 5 min; 92 in port_core; 0 in eOPL (initially thought to be "AIS gap")
+- 10 named anchored tankers with destinations "SGSIN", "PWBGA,SG"
+
+### Iteration 25: Historical AIS (Mendeley dataset, Oct 2023) — **CORRECTION**
+
+**The eOPL "AIS gap" was a receiver coverage issue, NOT a real gap.**
+
+Historical AIS from a different receiver network shows **4,240 unique vessels and 41,138 anchored reports in the eOPL zone** during October 2023 alone. The zone is dominated by tankers (type 80: 22,578 reports; type 89: 4,295; type 82: 2,151; type 81: 1,487).
+
+**October 2023 AIS vs SAR comparison:**
+| Zone | SAR (ships/scene) | AIS (unique/day) | AIS (anchored/day) | Ratio (SAR/AIS-anchored) |
+|---|---|---|---|---|
+| port_core | 118 | 658 | 502 | 0.24 |
+| eastern_opl | 86 | 296 | 90 | 0.96 |
+| western_opl | 71 | 337 | 147 | 0.48 |
+
+The eOPL zone has the HIGHEST SAR-to-anchored-AIS ratio (0.96) — the SAR detector finds nearly as many targets as there are anchored AIS vessels. This is strong validation of the CFAR detector in that zone.
+
+**Tanker dominance in eOPL confirms the bunkering mechanism:**
+- Type 80 (Tanker hazard A): 22,578 anchored reports (55% of all anchored)
+- All tanker types combined: 31,653 reports (77% of anchored reports)
+- The eOPL IS a bunkering anchorage — confirmed by two independent data sources (SAR + historical AIS)
+
+**Revised narrative:**
+1. Satellite radar explains 48% of bunker sales (R²=0.478, detrended, weather-robust)
+2. The mechanism is confirmed: eOPL is a tanker anchorage (77% of anchored reports are tankers)
+3. SAR detects vessels that some AIS receiver networks miss — not "dark vessels" but "receiver gap vessels"
+4. Historical AIS validates the eOPL zone as economically meaningful (Spearman rho=+0.66 with bunker)
+
+**Data sources used in this iteration:**
+- AISStream.io (live WebSocket, free API)
+- Mendeley dataset: "AIS Data from 11 ports around the globe" (Singapore, Oct 2023, 610K records)
+- AISHub.net (community REST API, free membership, 1/min rate limit)
