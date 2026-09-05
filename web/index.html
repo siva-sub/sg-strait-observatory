@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Singapore Strait Observatory — vessels from Sentinel-1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.js" crossorigin="anonymous"></script>
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+<style>
+  :root { --bg:#0e1116; --panel:#161b22; --ink:#e6e8eb; --mut:#9aa4b2; --acc:#ff5d5d; --cy:#22d3ee; --yl:#fbbf24; --or:#fb923c; }
+  * { box-sizing:border-box; margin:0; }
+  body { background:var(--bg); color:var(--ink); font:14px/1.45 -apple-system,Segoe UI,Roboto,sans-serif; display:flex; flex-direction:column; height:100vh; }
+  header { padding:10px 16px; background:var(--panel); border-bottom:1px solid #232a33; display:flex; flex-wrap:wrap; gap:10px; align-items:baseline; }
+  header h1 { font-size:17px; letter-spacing:.2px; }
+  header h1 b { color:var(--acc); }
+  header .sub { color:var(--mut); font-size:12.5px; }
+  main { flex:1; display:flex; min-height:0; }
+  #map { flex:1; }
+  aside { width:390px; background:var(--panel); border-left:1px solid #232a33; overflow-y:auto; padding:14px; }
+  .card { background:#1b222c; border:1px solid #26303c; border-radius:10px; padding:12px; margin-bottom:12px; }
+  .card h2 { font-size:13px; text-transform:uppercase; letter-spacing:.6px; color:var(--mut); margin-bottom:8px; }
+  .kpi { display:flex; gap:10px; }
+  .kpi div { flex:1; }
+  .kpi .v { font-size:22px; font-weight:700; }
+  .kpi .k { font-size:11px; color:var(--mut); }
+  .neg { color:var(--acc); } .pos { color:#4ade80; }
+  .sliderrow { display:flex; gap:10px; align-items:center; margin-top:4px; }
+  input[type=range] { flex:1; accent-color:var(--acc); }
+  #monthlab { font-variant-numeric:tabular-nums; font-weight:700; color:var(--yl); }
+  img.chart { width:100%; border-radius:6px; border:1px solid #26303c; margin-top:6px; }
+  .legend span { display:inline-block; margin-right:10px; font-size:12px; color:var(--mut); }
+  .dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:4px; vertical-align:1px; }
+  footer { padding:8px 16px; background:var(--panel); border-top:1px solid #232a33; color:var(--mut); font-size:11.5px; }
+  .maplibregl-popup-content { background:#1b222c; color:var(--ink); border:1px solid #313d4c; font-size:12.5px; }
+</style>
+</head>
+<body>
+<header>
+  <h1><b>Singapore Strait Observatory</b> — vessels seen by Sentinel-1 radar</h1>
+  <div class="sub">night &amp; cloud-proof SAR · free Copernicus data · honest results, including the negative ones</div>
+</header>
+<main>
+  <div id="map"></div>
+  <aside>
+    <div class="card">
+      <h2>Scene explorer</h2>
+      <div class="sliderrow">
+        <input id="mrange" type="range" min="0" max="11" value="11">
+        <div id="monthlab">—</div>
+      </div>
+      <div id="sceneinfo" style="color:var(--mut); font-size:12.5px; margin-top:6px;">Move the slider: each step is one monthly radar composite (Sep 2025 – Aug 2026).</div>
+      <div class="legend" style="margin-top:8px;">
+        <span><i class="dot" style="background:var(--acc)"></i>vessel detection</span>
+        <span><i class="dot" style="background:var(--cy)"></i>port core</span>
+        <span><i class="dot" style="background:var(--yl)"></i>eastern OPL</span>
+        <span><i class="dot" style="background:var(--or)"></i>western OPL</span>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Headline results (honest)</h2>
+      <div class="kpi">
+        <div><div class="v">870+</div><div class="k">radar scenes processed<br>2015–2026</div></div>
+        <div><div class="v pos">r≈0.7</div><div class="k">anchorage presence vs<br>bunker sales (detrended)</div></div>
+        <div><div class="v pos">r≈0.5</div><div class="k">vs container TEU &amp;<br>vessel arrivals</div></div>
+      </div>
+      <p style="margin-top:10px; color:var(--mut); font-size:12.5px;">
+        Ships anchored in the eastern OPL (open water NE of Batam) co-move with official statistics —
+        robust to detrending (YoY changes, n=45): bunker sales r=+0.46 (MA3: +0.68), arrivals +0.37, container +0.33.
+        Total-AOI counts show no detrended signal — <span class="neg">zone choice is the whole game</span>.
+        H1-2024 congestion: <b>no queue spike</b> in any zone (presence slightly down); official container arrivals also flat —
+        it was a waiting-time event. Full failure log in the repo README.</p>
+    </div>
+    <div class="card">
+      <h2>Index vs official container throughput</h2>
+      <img class="chart" src="assets/perscene_join_chart.png" alt="satellite index vs container TEU">
+      <div style="color:var(--mut); font-size:11.5px; margin-top:4px;">Monthly mean ±95% CI per overpass days (2015–2026) vs MPA container TEU.</div>
+    </div>
+    <div class="card">
+      <h2>H1-2024 congestion case study</h2>
+      <img class="chart" src="assets/congestion_2024.png" alt="congestion case study">
+      <div style="color:var(--mut); font-size:11.5px; margin-top:4px;">Anchorage presence vs official container-vessel arrivals; shaded window = MPA-confirmed congestion period.</div>
+    </div>
+  </aside>
+</main>
+<footer>
+  Data: Copernicus Sentinel-1 (ESA/CDSE) · official statistics: MPA &amp; SingStat via data.gov.sg · basemap: CARTO / ©OpenStreetMap contributors ·
+  methods &amp; code: github (sg-strait-observatory) — CFAR detector v3.1, per-scene pipeline, detrended analysis.
+</footer>
+<script>
+window.addEventListener('error', function(e){
+  var d = document.getElementById('dbg');
+  if (!d) { d = document.createElement('div'); d.id='dbg'; d.style.cssText='position:fixed;top:0;left:0;z-index:999;background:#b91c1c;color:#fff;padding:4px 8px;font:12px monospace;max-width:100%;'; document.body.appendChild(d); }
+  d.textContent = 'JSERR: ' + (e.message || e.type);
+});
+const MONTHS = ["202509","202510","202511","202512","202601","202602","202603","202604","202605","202606","202607","202608"];
+const ZONES = {
+  "port core":  { color:"#22d3ee", coords:[[103.68,1.20],[104.02,1.20],[104.02,1.34],[103.68,1.34]] },
+  "eastern OPL":{ color:"#fbbf24", coords:[[104.00,1.24],[104.35,1.24],[104.35,1.40],[104.00,1.40]] },
+  "western OPL":{ color:"#fb923c", coords:[[103.58,1.10],[103.78,1.10],[103.78,1.32],[103.58,1.32]] }
+};
+let map = null;
+try {
+map = new maplibregl.Map({
+  container:"map", style:{ version:8, sources:{ carto:{ type:"raster",
+      tiles:["https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
+             "https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png"],
+      tileSize:256, attribution:"©OpenStreetMap contributors ©CARTO" } },
+    layers:[{ id:"basemap", type:"raster", source:"carto" }] },
+  center:[103.95,1.24], zoom:9.6, attributionControl:true
+});
+} catch (e) { var d0=document.getElementById('dbg'); if(!d0){d0=document.createElement('div');d0.id='dbg';document.body.appendChild(d0);} d0.textContent='CTORERR: '+(e&&e.message||e); }
+if (map) map.addControl(new maplibregl.NavigationControl({visualizePitch:false}));
+
+const popup = new maplibregl.Popup({offset:8, closeButton:false});
+let det = { features: [] };
+window.__err = "none";
+
+if (map) map.on("load", async () => {
+ if (!map) return;
+ try {
+  window.__map = map;
+  // zone rectangles (corrected, v3)
+  const zf = Object.entries(ZONES).map(([n,z],i)=>({ type:"Feature",
+    geometry:{ type:"LineString", coordinates:[...z.coords, z.coords[0]] },
+    properties:{ name:n, color:z.color } }));
+  map.addSource("zones", { type:"geojson", data:{ type:"FeatureCollection", features:zf } });
+  map.addLayer({ id:"zones", type:"line", source:"zones", paint:{ "line-color":["get","color"], "line-width":1.6 } });
+  zf.forEach((f,i)=>{ const c=f.geometry.coordinates[0];
+    new maplibregl.Marker({ color:ZONES[f.properties.name].color }).setLngLat(c)
+      .setPopup(new maplibregl.Popup({offset:12}).setText(f.properties.name)).addTo(map); });
+
+  // detections
+  const r = await fetch("assets/detections_v3.geojson"); det = await r.json();
+  window.__det = det;
+  map.addSource("dets", { type:"geojson", data:det });
+  map.addLayer({ id:"dets-heat", type:"circle", source:"dets", paint:{
+      "circle-color":"#ff5d5d", "circle-opacity":0.55,
+      "circle-radius":["interpolate",["linear"],["zoom"],9,2.2,12,5.5] },
+    filter:["==","date",MONTHS[MONTHS.length-1]] });
+  map.addLayer({ id:"dets-dot", type:"circle", source:"dets", paint:{
+      "circle-color":"#ffd7d7", "circle-radius":1.4 },
+    filter:["==","date",MONTHS[MONTHS.length-1]] });
+  map.on("mousemove","dets-heat", e => { const f=e.features[0].properties;
+    popup.setLngLat(e.lngLat).setHTML(`<b>${f.date.slice(0,4)}-${f.date.slice(4)}</b><br>${f.npix} px · peak ${f.peak_db} dB<br>${f.zone}`).addTo(map); });
+  map.on("mouseleave","dets-heat", () => popup.remove());
+  showMonth(11);
+ } catch (e) { window.__err = String(e && e.stack || e);
+   var d = document.getElementById('dbg'); if (!d) { d = document.createElement('div'); d.id='dbg'; document.body.appendChild(d); }
+   d.textContent = 'LOADERR: ' + (e && e.message || e); console.error(e); }
+});
+
+function showMonth(i){
+  const m = MONTHS[i];
+  document.getElementById("monthlab").textContent = `${m.slice(0,4)}-${m.slice(4)}`;
+  if (map.getLayer("dets-heat")) {
+    map.setFilter("dets-heat", ["==","date",m]);
+    map.setFilter("dets-dot",  ["==","date",m]);
+    const n = det.features.filter(f=>f.properties.date===m).length;
+    document.getElementById("sceneinfo").textContent =
+      `${n} vessels detected in this monthly composite · CFAR v3.1 on Sentinel-1 VV (γ₀, orthorectified).`;
+  }
+}
+document.getElementById("mrange").addEventListener("input", e => showMonth(+e.target.value));
+</script>
+</body>
+</html>

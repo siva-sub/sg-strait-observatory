@@ -1,0 +1,341 @@
+===== gh2_landsatsortstars.json
+4022	gee-community/geemap	A Python package for interactive geospatial analysis and visualization with Google Ea
+1170	awesome-spectral-indices/awesome-spectral-indices	A ready-to-use curated list of Spectral Indices for Remote Sensing applications.
+707	deepVector/geospatial-machine-learning	A curated list of resources focused on Machine Learning in Geospatial Data Science.
+698	developmentseed/landsat-util	A utility to search, download and process Landsat 8 satellite imagery
+547	e-sensing/sits	Satellite image time series in R
+536	GeoscienceAustralia/dea-notebooks	Open-source Jupyter Notebooks and Python tools for geospatial analysis with Digital E
+428	CS-SI/eodag	Earth Observation Data Access Gateway
+405	NASA-IMPACT/hls-foundation-os	This repository contains examples of fine-tuning Harmonized Landsat and Sentinel-2 (H
+367	Climate-Vision/ClimateVision	Open-source ML platform for detecting deforestation, ice melt, and flooding from Sent
+346	sertit/eoreader	Remote-sensing opensource python library reading optical and SAR sensors, loading and
+313	16EAGLE/getSpatialData	An R package 📦 making it easy to query, preview, download and preprocess multiple kin
+240	yannforget/landsatxplore	Search and download Landsat scenes from EarthExplorer.
+226	eMapR/LT-GEE	Google Earth Engine implementation of the LandTrendr spectral-temporal segmentation a
+210	ESDS-Leipzig/cubo	On-Demand Earth System Data Cubes (ESDCs) in Python
+209	olivierhagolle/LANDSAT-Download	Automated download of LANDSAT data from USGS website
+===== gh2_sentinel2sortstars.json
+2053	2881099/csredis	.NET Core or .NET Framework 4.0+ client for Redis and Redis Sentinel (2.8) and Cluste
+573	phelber/EuroSAT	EuroSAT: Land Use and Land Cover Classification with Sentinel-2
+493	sentinel-hub/sentinel2-cloud-detector	Sentinel Hub Cloud Detector for Sentinel-2 images in Python
+405	NASA-IMPACT/hls-foundation-os	This repository contains examples of fine-tuning Harmonized Landsat and Sentinel-2 (H
+367	Climate-Vision/ClimateVision	Open-source ML platform for detecting deforestation, ice melt, and flooding from Sent
+290	ctstone/csredis	.NET client for Redis and Redis Sentinel (2.8). Includes both synchronous and asynchr
+281	sparkyniner/DRISH-X-Satellite-powered-freight-intelligence-	Detect, count, and track truck traffic on any highway on Earth using nothing but free
+276	hopechen067/china-antique-maplibre	China antique parchment MapLibre stack: EOX Sentinel-2 + Terrarium hillshade, water o
+271	lanha/DSen2	Super-Resolution of Sentinel-2 Images: Learning a Globally Applicable Deep Neural Net
+204	Zhaoguanhua/AtmosphericCorrection	6s模型大气校正python版本，支持GF1、2,Landsat-8,Sentinel-2等影像
+194	olivierhagolle/Sentinel-download	Automated download of Sentinel-2 L1C data from ESA (through wget) :http://olivierhago
+194	jensleitloff/CNN-Sentinel	Analyzing Sentinel-2 satellite data in Python with Keras (repository of our talks at 
+190	GERSL/Fmask4	The software called Fmask (Function of mask) is used for automated clouds, cloud shad
+190	langnico/global-canopy-height-model	This repository contains the code used in the paper: A high-resolution canopy height 
+181	ameraner/dsen2-cr	DSen2-CR: A network for removing clouds from Sentinel-2 images. This repo contains th
+===== gh2_shipdetectionsenti.json
+160	MJCruickshank/SARfish	Ship detection in Sentinel 1 Synthetic Aperture Radar (SAR) imagery
+78	TianwenZhang0825/LS-SSDD-v1.0-OPEN	This is a Large-Scale SAR Ship Detection Dataset-v1.0 (LS-SSDD-v1.0) from Sentinel-1,
+36	alina2204/contrastive_SSL_ship_detection	Contrastive self supervised learning for ship detection in Sentinel 2 images
+27	carlossantamarizq/vesselTracker	Ship detection from satellite imagery using Deep Learning model (YOLOv5). Model train
+10	andrea-cap/s2-ship-detection	Ship detection on Sentinel-2 images
+7	eikeschuett/IcebergShipDetection	CNN-based algorithm for the detection and classification of icebergs and ships in Sen
+6	vipzpb/SAR-Ship-Detection	Automatic ship detection with ESA Sentinel-1 SAR imagey.
+4	phaneendraswamy/OIL-SPILL-DETECTION-ON-SEA-SURFACE-USING-SAR-IMAGES	Pollution by oil spills in open sea and coastal waters, whether accidental or deliber
+4	ioEclipse/SAR-SHIP-DETECTION	An end-to-end solution for robust ship detection and tracking in Synthetic Aperture R
+3	skaersoe/SAR-Ship-Detection	Automatic ship detection with ESA Sentinel-1 SAR imagey.
+2	manasibaranidharan/SAR_Based_Maritime_Surveillance_for_Dark_Vessel_Detection_and_Forecasting	An AI-based maritime surveillance system that uses Sentinel-1 SAR imagery, YOLOv8, an
+1	ayushmankumar7/Maritime-Ship-Detection-System	Satellite-based maritime intelligence system using Sentinel-1 SAR data to detect, loc
+1	Temesghen-Eyassu/DeepLearning_for_ShipDetection-	Deep learning project for ship detection using Sentinel-1 SAR images. Includes U-Net 
+1	gSulpizio/sat_tracker	Dark vessel detection: fuse Sentinel-1 SAR imagery with live AIS to find ships that a
+1	deepeshyadav760/Ship_Detection_Using_SAR_Data	This repository implements an end-to-end pipeline for ship detection using Sentinel-1
+===== gh2_topicstacsortstars.json
+1157	developmentseed/titiler	Build your own Raster dynamic map tile services
+919	StacDev/stac	Stac is a Server-Driven UI (SDUI) framework for Flutter, enabling you to create stunn
+895	microsoft/farmvibes-ai	FarmVibes.AI: Multi-Modal GeoSpatial ML Models for Agriculture and Sustainability
+428	CS-SI/eodag	Earth Observation Data Access Gateway
+272	gjoseph92/stackstac	Turn a STAC catalog into a dask-based xarray
+222	stac-utils/pgstac	Schema, functions and a python library for storing and accessing STAC collections and
+218	geolens-io/geolens	Self-hosted geospatial data catalog with semantic search (pgvector), OGC/STAC APIs, a
+210	ESDS-Leipzig/cubo	On-Demand Earth System Data Cubes (ESDCs) in Python
+207	stac-utils/pystac-client	Python client for searching STAC APIs
+144	stac-utils/rustac	The power of Rust for the STAC ecosystem
+143	google/earthengine-catalog	Earth Engine Public Data Catalog in STAC form
+109	developmentseed/stac-map	A map-first STAC search and visualization tool, with stac-geoparquet support
+85	weiji14/zen3geo	The 🌏 data science library you've been waiting for~
+81	brazil-data-cube/rstac	R Client Library for SpatioTemporal Asset Catalog
+79	stac-utils/stac-fastapi-elasticsearch-opensearch	Elasticsearch backend for stac-fastapi with Opensearch support.
+===== gh2_transitvisualizati.json
+701	conveyal/transitive.js	Transit data visualization
+631	asdfghj1237890/mini-macau	Trilingual 3D visualization of Macau's public transit and aviation — LRT, buses, ferr
+92	the-nemz/metro-dreamin	MetroDreamin' is a web application that allows users to design and visualize their dr
+68	OneBusAway/onebusaway-gtfs-realtime-visualizer	A visualizer for GTFS-realtime transit data.
+36	sidewalklabs/totx	The Toronto Transit Explorer app visualizes transit, biking and walking accessibility
+28	trynmaps/metrics-mvp	Prototype of public transit data visualization system
+27	kylebarron/all-transit	Interactive visualization of all transit in the Transitland database
+21	RealSeaberry/ADS-B-Transit-Predictor	A real-time visualization tool for predicting aircraft transits across the sun and mo
+17	ODOT-PTS/TNExT	a web-based software tool developed for the visualization, analysis, and reporting of
+16	bsdavidson/trimetric	Realtime visualization of Portland's transit system
+15	SAUSy-Lab/canada-transit-access	code for computing, analyzing, and visualizing measures of transit accessibility in C
+15	OpenFlow-X/WardhaMetroFlow	An AI-powered metro simulation for the city of Wardha. It offers two views: Passenger
+15	npaton/gogtfs	GTFS (Google Transit feed specification) package for the Go language. Also an infant 
+15	jtl-transit/rove	ROVE is an interactive bus transit performance analysis tool developed by the MIT Tra
+11	tyleragreen/frequency-visualization	NYC public transit frequency visualization using Transitland.
+===== gh2_urbanheatislandsor.json
+84	ladybug-tools/uwg	:city_sunrise: The Urban Weather Generator (uwg) is a Python application for modeling
+58	Dogiye12/Urban-Heat-Island-Mapping-with-ML-Thermal-Imagery	This project maps Urban Heat Islands using synthetic thermal imagery and machine lear
+49	Okes2024/Modelling-Urban-Heat-Islands-from-Satellite-Imagery	Synthetic modeling of Urban Heat Islands (UHI) using satellite-like data. Generates s
+48	yotkadata/uhi_detector	Using Deep Learning and satellite imagery to detect Urban Heat Island (UHI) effects
+44	Otutu11/Urban-Heat-Island-Effect-Prediction	Urban Heat Island (UHI) analysis combines satellite, climate, and urban data to model
+43	ladybug-tools/dragonfly-legacy	:bug:  Legacy dragonfly plugin for large-scale climate and urban heat island modeling
+35	ArhamOrioner/UHI-Analysis	Detecting and predicting Urban Heat Islands (UHIs) using satellite temperature and la
+30	Geraldine-Winston/Urban-Heat-Island-Mapping-using-deep-learning-on-remote-sensing-imagery.	Harnessing deep learning and satellite imagery, this project unveils Urban Heat Islan
+28	damienallen/urban-heat	Interactive urban heat island explorer
+27	cecil8503/GWRF	Please cite: Zhang, Y., Ge, J., Wang, S., & Dong, C. (2024). Optimizing Urban Green S
+25	Beckybams/Urban-Heat-Island-Mapping-using-AI	Urban-Heat-Island-Mapping-using-AI is a machine learning project that analyzes and pr
+23	Osondu-ifunanya/Urban-heat-island-detection-and-prediction-using-ML	This project models Urban Heat Island detection using synthetic data and machine lear
+23	ByMaxAnjos/LCZ4r	An R Package for Local Climate Zones and Urban Heat Island Analysis
+20	martibosch/lausanne-heat-islands	Simulation of urban heat islands in Lausanne with the InVEST urban cooling model
+17	isatyamks/UHI-Detector	Urban Heat Island Detection and Forecasting Model
+===== gh_commute_map.json
+===== gh_copernicus.json
+1020	sentinelsat/sentinelsat	Search and download Copernicus Sentinel satellite images
+973	kormax/apple-home-key-reader	Apple Home Key Reader Implementation
+583	kr-stn/awesome-sentinel	curated list of awesome tools, tutorials and APIs for Copernicus Sentinel satellite d
+428	CS-SI/eodag	Earth Observation Data Access Gateway
+399	colincode0/earth-view	Interactive 3D satellite imagery explorer pulling NASA GIBS and Copernicus Sentinel d
+354	kormax/apple-home-key	Reverse-engineering Apple Home Key
+321	ecmwf/cdsapi	Python API to access the Copernicus Climate Data Store (CDS) 
+317	bopen/sarsen	Algorithms and utilities for Synthetic Aperture Radar (SAR) sensors
+313	16EAGLE/getSpatialData	An R package 📦 making it easy to query, preview, download and preprocess multiple kin
+245	bopen/xarray-sentinel	Xarray backend to Copernicus Sentinel-1 satellite data products
+188	Agri-Hub/Callisto-Dataset-Collection	A list of datasets aiming to enable Artificial Intelligence applications that use Cop
+167	ec-jrc/lisflood-code	Lisflood OS - LISFLOOD
+149	zhu-xlab/Copernicus-FM	Towards a Unified Copernicus Foundation Model for Earth Vision
+138	bluegreen-labs/ecmwfr	Interface to the public ECMWF API Web Services
+117	kormax/aliro	Aliro access credential protocol research
+===== gh_deckgl.json
+384	SymbolixAU/mapdeck	R interface to Deck.gl and Mapbox
+182	Juliusolsson05/pharos-ai	Open-source OSINT intelligence dashboard tracking the Iran conflict in real time — li
+133	theosanderson/taxonium	A tool for exploring large trees in the browser
+120	SamSamskies/react-map-gl-geocoder	React wrapper for mapbox-gl-geocoder for use with react-map-gl
+100	qfes/rdeck	Deck.gl widget for R
+53	mountayaapp/insight-editor	Open source geospatial analysis for large-scale data sets with kepler.gl, DuckDB, and
+32	dbabbs/mobility-map	🚙 🚲 🛴Interactive map of my Uber, Lyft, Jump and Lime trips
+25	stevekirks/deckgl-trips	deck.gl trips - an example
+25	GlobalFishingWatch/frontend	Hosts GlobalFishingWatch apps and libraries.
+23	sunu/geoparquet-duckdb-deckgl-demo	A prototype demostrating querying, filtering and visualizing data from remote geoparq
+18	samerelhousseini/Geospatial-Analysis-With-Spark	This is a data processing pipeline that implements an End-to-End Real-Time Geospatial
+18	opengeos/lidar-viewer	A web-based LiDAR point cloud viewer
+17	njanakiev/wikidata-mayors	Exploration of the Mayors in Europe with Wikidata and Python
+15	oalles/pypsa-eur-map-viewer	Interactive European energy map viewer built with React, Vite, Deck.gl, and MapLibre.
+14	naturalsolutions/ecoteka	Open source tree management system
+===== gh_earth_engine.json
+4022	gee-community/geemap	A Python package for interactive geospatial analysis and visualization with Google Ea
+1556	giswqs/earthengine-py-notebooks	A collection of 360+ Jupyter Python notebook examples for using Google Earth Engine w
+1238	opengeos/Awesome-GEE	A curated list of Google Earth Engine resources
+990	giswqs/qgis-earthengine-examples	A collection of 300+ Python examples for using Google Earth Engine in QGIS
+777	r-spatial/rgee	Google Earth Engine for R
+570	gee-community/geetools	A collection of tools to work with Google Earth Engine Python API
+559	bellingcat/sar-interference-tracker	A Google Earth Engine tool for identifying satellite radar interference.
+513	gee-community/qgis-earthengine-plugin	Integrates Google Earth Engine and QGIS using Python API
+451	davemlz/eemont	A python package that extends Google Earth Engine.
+371	google/Xee	An Xarray extension for Google Earth Engine
+343	gee-community/ee-palettes	A set of common color palettes for Google Earth Engine
+327	renelikestacos/Google-Earth-Engine-Python-Examples	Various examples for Google Earth Engine in Python using Jupyter Notebook
+323	fitoprincipe/geetools-code-editor	A set of tools to use in Google Earth Engine Code Editor (JavaScript)
+304	ChHarding/TouchTerrain_for_CAGEO	Touch Terrain: A python app to create 3D printable terrain models (STL/OBJ) from only
+300	adugnag/gee_s1_ard	Creates an analysis ready sentinel-1 SAR image collection in Google Earth Engine by a
+===== gh_gtfs_viz.json
+===== gh_insar.json
+1047	denkywu/SAR-Synthetic-Aperture-Radar	合成孔径雷达 相关。研究生期间学习 SAR/InSAR/PolSAR 相关的代码和总结，毕业后已经离开这个领域了。分享出来，仅此纪念。1）SAR: 成像算法，RD，CS，
+832	insarlab/MintPy	Miami InSAR time-series software in Python
+664	isce-framework/isce2	InSAR Scientific Computing Environment version 2
+597	AlexeyPechnikov/pygmtsar	PyGMTSAR (Python InSAR): Powerful and Accessible Satellite Interferometry
+283	yumorishita/LiCSBAS	LiCSBAS: InSAR time series analysis package using LiCSAR products
+240	senbox-org/s1tbx	The Sentinel-1 Toolbox
+235	isce-framework/isce3	InSAR Scientific Computing Environment
+232	GeoscienceAustralia/PyRate	A Python tool for estimating velocity and time-series from Interferometric Synthetic 
+202	denkywu/Simulation-of-SAR-Imaging-Algorithm	合成孔径雷达成像 相关。Some work I did during my graduate studies (Matlab Code) : (1) Simulation
+184	jldz9/InSARHub	A modular Python framework for end to end InSAR and time-series processing with GUI s
+178	alexisInSAR/EZ-InSAR	Easy InSAR
+170	DinhHoTongMinh/TomoSAR	Open-source TomoSAR package for PSDSInSAR and ComSAR algorithms
+160	insarlab/MintPy-tutorial	MintPy tutorials in Jupyter Notebook
+146	isce-framework/dolphin	InSAR phase linking library for creating surface displacement maps using persistent s
+138	insarlab/MiaplPy	MIAmi Phase Linking in PYthon
+===== gh_isochrone.json
+279	urbica/galton	Lightweight Node.js isochrone map server
+56	NAISorg/conrex	An Elixir implementation of the CONREC algorithm for topographic or isochrone maps.
+30	stepankuzmin/node-isochrone	NodeJS isochrone map library
+29	Samweli/isochrones	A tool for creating isochrones maps 
+13	vuski/seoulsubway	Interactive Isochrone Map of Seoul Subway 
+11	milos-agathon/isochrone_maps	In this repo, I will show you how to create interactive and static isochrone maps in 
+10	opencleveland/RTAHeatMap	Python Scripts to generate the distance and time to walk to the nearest public transp
+7	rubenfiszel/switzograms	An isochrone map of Switzerland's public transportation network.
+7	adamjamesfrench-ldn/london-travel-time	Interactive isochrone map showing everywhere reachable within a given time from any L
+7	geoapify/maps-api-code-samples	Code samples for using Geoapify APIs: geocoding, routing, isochrones, maps, and more 
+5	no30131/renthouse-tracker	A personal rental evaluation tool integrating commute time, isochrone maps, climate d
+4	urban-travel/interactive-isochrone-map	
+4	kauttoj/IsochroneMapper	Code to compute isochrone map for a target location and surrounding region. Made for 
+4	pbarber/uk-isochrones-map	Map showing where you can travel from starting points across the UK using public tran
+4	ajnisbet/biking-to-work	Building an isochrone map for my morning commute.
+===== gh_kepler_gl.json
+42	kylebarron/keplergl_cli	One-line geospatial data visualization using Kepler.gl
+30	yangxvlin/comp90024-project2	COMP90024 - Cluster and Cloud Computing - 2020S1 - Assignment 2
+27	ManuelB/covid-19-vis	This repository contains data visualizations based on RKI and DIVI using kepler.gl
+22	fannykassapian/metro-traffic-data-analysis	Data cleaning, analysis and visualization of Paris metro traffic (Python, Pandas, Mat
+20	foursquare/qgis-plugin	Foursquare Studio plugin for QGIS
+18	giswqs/leafmap-streamlit	Publishing interactive web apps using leafmap and streamlit 
+18	crazycapivara/docker-kepler.gl	kepler.gl in a box
+7	khadkakrishna/kepler-gl-docker	Deploy kepler.gl in docker container
+5	cartologic/saudi-kepler-map	A map that visualizes COVID-19 spread in Saudi Arabia using Kepler.gl.
+4	classicmatsuo/keplerGL-chi-greenRoofs	Forked demo version of the Kepler.gl (WebGL and D3.js) geospatial analysis tool for l
+3	Yutianxinw/Geo-segmentation-kepler	Visualizing customer segmentation using Kepler.gl with a focus on geographic patterns
+2	reclosedev/stravaweb	Analyze Strava activities on interactive map
+2	engineerchange/biodiversity-hack	'Biodiversity' Hackathon for Hampton Roads
+2	geostarters/keplergl-template-app	KeplerGL and ReactJs template
+2	gokhan-sari/keplergl-earthquake-heatmap	
+===== gh_landsat.json
+4022	gee-community/geemap	A Python package for interactive geospatial analysis and visualization with Google Ea
+1170	awesome-spectral-indices/awesome-spectral-indices	A ready-to-use curated list of Spectral Indices for Remote Sensing applications.
+707	deepVector/geospatial-machine-learning	A curated list of resources focused on Machine Learning in Geospatial Data Science.
+698	developmentseed/landsat-util	A utility to search, download and process Landsat 8 satellite imagery
+547	e-sensing/sits	Satellite image time series in R
+536	GeoscienceAustralia/dea-notebooks	Open-source Jupyter Notebooks and Python tools for geospatial analysis with Digital E
+428	CS-SI/eodag	Earth Observation Data Access Gateway
+405	NASA-IMPACT/hls-foundation-os	This repository contains examples of fine-tuning Harmonized Landsat and Sentinel-2 (H
+367	Climate-Vision/ClimateVision	Open-source ML platform for detecting deforestation, ice melt, and flooding from Sent
+346	sertit/eoreader	Remote-sensing opensource python library reading optical and SAR sensors, loading and
+313	16EAGLE/getSpatialData	An R package 📦 making it easy to query, preview, download and preprocess multiple kin
+240	yannforget/landsatxplore	Search and download Landsat scenes from EarthExplorer.
+226	eMapR/LT-GEE	Google Earth Engine implementation of the LandTrendr spectral-temporal segmentation a
+210	ESDS-Leipzig/cubo	On-Demand Earth System Data Cubes (ESDCs) in Python
+209	olivierhagolle/LANDSAT-Download	Automated download of LANDSAT data from USGS website
+===== gh_leaflet_dash.json
+3	mohaneddz/Nasij	𝐍𝐀𝐒𝐈𝐉 is a wool traceability and operations monorepo built with Flutter, FastAPI, Rea
+1	SimonbJohnson/ld.js	Leaflet Dashboards
+1	sutanmufti/leaflet-dashboard	dashboard template for leaflet
+1	munikumar2003/geospatial_d3_leaflet_dashboard	
+1	orwajabali/saferoute-stream	Real-time road accident severity prediction — Kafka → Spark Structured Streaming → Mo
+1	Maarij-x04/Nowcasting-farm-app	Next.js + Leaflet dashboard visualizing GFS/WRF weather data (temp, wind, cloud cover
+1	ananyasahaanu/tahirpur-flood-vulnerability	Conceptual flood vulnerability map of Tahirpur Sadar Union, Sunamganj haor region, Ba
+1	SOUVIKKONAR/Pothole-and-Garbage-Detection-System-	An end-to-end IoT monitoring system that detects road potholes & waste in real time u
+0	Hanaz80/LeafletDashboard	
+0	wcurrangroome/leaflet-dashboard	
+0	hadermed/Leaflet-Dashboard	
+0	amaliasekar/dummybidkel	html-sheets-leaflet-dashboard
+0	Kayynnn/love-dummybidkel	html-sheets-leaflet-dashboard
+0	nCally/leaflet-dashboard	Leaflet dashboard with markers showing locations
+0	ankoure/Leaflet-Dashboards	
+===== gh_mapbox_gl.json
+8495	visgl/react-map-gl	React friendly API wrapper around MapboxGL JS
+4453	mapbox/mapbox-gl-native	Interactive, thoroughly customizable maps in native Android, iOS, macOS, Node.js, and
+3889	maplibre/martin	Blazing fast and lightweight PostGIS, MBtiles and PMtiles tile server, tile generatio
+2170	nitaliano/react-native-mapbox-gl	A Mapbox GL react native module for creating custom maps
+1985	alex3165/react-mapbox-gl	A React binding of mapbox-gl-js
+1095	JamesLMilner/terra-draw	A library for drawing on maps that supports Mapbox, MapLibre, Google Maps, OpenLayers
+1083	mapbox/mapbox-gl-draw	Draw tools for mapbox-gl-js
+708	sakitam-fdd/wind-layer	:flags: :rocket: wind-layer | a openlayers && maptalks && amap && bmap && leaflet && 
+544	maputnik/osm-liberty	A free Mapbox GL basemap style for everyone
+478	soal/vue-mapbox	Vuejs 2 components for interacting with mapbox-gl-js
+425	urbica/react-map-gl	React Component Library for Mapbox GL JS
+384	SymbolixAU/mapdeck	R interface to Deck.gl and Mapbox
+365	cvalenzuela/Mappa	A canvas wrapper for Maps  🗺 🌍
+361	ECarry/photography-website	A modern photography portfolio website built with Next.js 16, featuring interactive m
+358	Wykks/ngx-mapbox-gl	Angular binding of mapbox-gl-js
+===== gh_otds.json
+===== gh_sentinel2.json
+2053	2881099/csredis	.NET Core or .NET Framework 4.0+ client for Redis and Redis Sentinel (2.8) and Cluste
+1170	awesome-spectral-indices/awesome-spectral-indices	A ready-to-use curated list of Spectral Indices for Remote Sensing applications.
+889	kvos/CoastSat	Global shoreline mapping tool from satellite imagery
+613	Clay-foundation/model	The Clay Foundation Model - An open source AI model and interface for Earth
+596	OTRF/Microsoft-Sentinel2Go	Microsoft Sentinel2Go is an open source project developed to expedite the deployment 
+573	phelber/EuroSAT	EuroSAT: Land Use and Land Cover Classification with Sentinel-2
+547	e-sensing/sits	Satellite image time series in R
+536	GeoscienceAustralia/dea-notebooks	Open-source Jupyter Notebooks and Python tools for geospatial analysis with Digital E
+493	sentinel-hub/sentinel2-cloud-detector	Sentinel Hub Cloud Detector for Sentinel-2 images in Python
+437	chrieke/InstanceSegmentation_Sentinel2	🌱 Deep Learning for Instance Segmentation of Agricultural Fields - Master thesis
+405	NASA-IMPACT/hls-foundation-os	This repository contains examples of fine-tuning Harmonized Landsat and Sentinel-2 (H
+367	Climate-Vision/ClimateVision	Open-source ML platform for detecting deforestation, ice melt, and flooding from Sent
+346	sertit/eoreader	Remote-sensing opensource python library reading optical and SAR sensors, loading and
+334	lennart-rth/Live-Earth-Wallpapers	A collection of all earth related space Images in one script to set as your Desktop b
+290	ctstone/csredis	.NET client for Redis and Redis Sentinel (2.8). Includes both synchronous and asynchr
+===== gh_singapore_geo.json
+===== gh_singapore_map.json
+7	tule2236/Dynamic-Dispatch-and-Route-Optimization-Application	(Internship Project) Use Unsupervised Learning, Randomized Optimization, Task Assignm
+2	gpng/onemap-react-maplibre-demo	Build a Singapore map based web application for no cost.
+2	stephenmccready/SingaporeWeather	2 Hour Singapore Map and 24 hour forecast. Derived from XML feeds from the Singapore 
+1	AlexanderNeo427/Singapore-Map-Pathfinding	Pathfinding algorithms visualized on a map of Singapore
+1	missycoder/Singapore-Map-Application	
+1	missycoder/Interactive-Singapore-Map-with-FourSquare-Search	
+1	radiansnail-1/bto-narrowing-map	Cinematic Singapore map for narrowing official BTO projects
+1	nordic96/sg_eatwhere	3d representation of Singapore Map for local food spots using React, Next.js, three.j
+0	dxdtan/SingaporeMap	
+0	LettleCreator/SingaporeMap	Django/Leaflet/postgreSQL
+0	Planktonicker/Singapore-Map	Singapore Map
+0	sephylon09/SG-Locate	Singapore Map Locations
+0	ssda92617-dev/singapore-map	
+0	gaspar787/singapore-maps	
+0	DewinGoh/singapore-map	
+===== gh_singapore_mrt.json
+13	joulev/mrt-badges	A small service rendering the SVG station badges of Singapore MRT stations
+9	jtlx/singapore-mrt-voronoi	A map of Singapore, zoned by nearest MRT station
+9	foldaway/mrtdown-site	Community-run Singapore MRT/LRT disruption tracker.
+9	elliotwutingfeng/railrailrail	🚇 Route planner for all stages of the Singapore MRT/LRT rail network (1987-2040+).
+7	mdluo/mrt-routes-finder	🚇 A Singapore MRT routes finder web app developed with React + Typescript, featured B
+5	e-tinkers/mrt_map	An interactive transport map (based on Singapore MRT map) that utilises shortest path
+5	winhtaikaung/react-smrt-map-selector	Singapore Mrt Stations Map React Component 
+2	franklingu/mrt_guide	Guide you through Singapore MRT systems.
+2	antoniofranciscoandrade/singapore-mrt-route-planner	
+2	PinsterpanKin/Optimizing-Congestion-in-High-Load-Singapore-MRT-Stations	A group project proposal.
+2	QGY-main/MRT-Network-Simulation-Dijkstra-graph	Passenger Flow Optimisation in the Singapore MRT network through Linear Algebra, Mont
+1	Filbert88/Graph-and-Dijkstra-SingaporeMRTLine	Efficient Route Mapping in the Singapore MRT Leveraging Graph Theory and Dijkstra's A
+1	nxusr/singapore-mrt-lrt-translated	Singapore's MRT/LRT Map: Translated
+1	algal12/singapore-mrt-route-planner	Builds a graph of Singapore’s MRT network from station CSV data, then computes (1) sh
+1	jos-tang/Journey-Planner	Shortest path algorithm using Dijkstra and Bellman-Ford for Singapore MRT and Bus 
+===== gh_stac.json
+===== gh_transit_viz.json
+4	morganyeh06/real-time-grt-map	A full-stack transit visualization app that tracks live vehicle positions and service
+3	alanjoyce/transit-visualization	Code for parsing GTFS files.
+2	zorapeteri/prettytransit	A timelapse public transit visualization app
+2	macalinao/VRTransit	Public transit visualization application for Samsung Gear VR.
+2	matthuska/transit	Science Hack Day Berlin 2015: Physical Transit Visualization
+1	LasVegasForTransit/transit-mapper	Multimodal transit visualization tool by Las Vegans for Better Transit.
+1	nikolacoding/JavaTransit	A simple Swing-based custom city transit visualizer and optimal route finder.
+1	Twinklebear/libIS	libIS is an in situ data management layer for easily using or prototyping in transit 
+1	pranathi988/Treck-bus	A global real-time bus tracking app using Leaflet and OpenStreetMap. Tracks 35+ buses
+0	code4tottori/toriffic	Tottori Transit Visualization
+0	mRB0/transilook	Java public transit visualizer
+0	thakurcodeshere/CommuteFlow	CommuteFlow transit visualization prototype
+0	dpendurthi/nyc-transit	NYC transit visualization in real time.
+0	cpreid2/CTA-Retro	1 Full Day of CTA Transit, Visualized
+0	annierak/dance_sim_tools	Classes for dance traces and transit visualization
+===== gh_travel_time.json
+195	econaxis/time2reach	Public-transit travel time map
+25	Vorld/singapore-travel-time-map	How far can you get in Singapore by public transport? Interactive travel-time map.
+7	petertrotman/london-underground-travel-time-map	
+4	GeoinfoBonn/travel-time-maps	This repository contains the code of the prototype implementation for the paper "Auto
+4	milos-agathon/travel-time-maps	This repository is your gateway to unlocking the power of GIS and elevating your data
+1	afrith/travel-time-maps	Code for creating travel time isochrone maps with pgRouting
+1	mtoconnor3/travel-time-maps	A repo of code that generates maps based on travel time and distances. 
+0	orenjhargreaves/TravelTimeMaps	Repository for https://replit.com/@orenjhargreaves/TravelTimeMaps
+0	gbvitrano/trentotimetravelmaps-napo	Trento Travel Time Maps
+0	dbaltzer/travel_time_maps	Java tool for computing public transport routes using GTFS network data
+0	adyngo/Travel_time_map	
+0	Carbonec2/travel-time-map	
+0	hellej/travel-time-map	
+0	lucasvanmeter/travel-time-maps	An attempt to distort maps to more accuratly show travel times instead of physical di
+0	chiachin-yen/travel_time_mapping	Mapping travel time from a certain point with Google Map API
+===== gh_uhi.json
+84	ladybug-tools/uwg	:city_sunrise: The Urban Weather Generator (uwg) is a Python application for modeling
+58	Dogiye12/Urban-Heat-Island-Mapping-with-ML-Thermal-Imagery	This project maps Urban Heat Islands using synthetic thermal imagery and machine lear
+49	Okes2024/Modelling-Urban-Heat-Islands-from-Satellite-Imagery	Synthetic modeling of Urban Heat Islands (UHI) using satellite-like data. Generates s
+48	yotkadata/uhi_detector	Using Deep Learning and satellite imagery to detect Urban Heat Island (UHI) effects
+44	Otutu11/Urban-Heat-Island-Effect-Prediction	Urban Heat Island (UHI) analysis combines satellite, climate, and urban data to model
+43	ladybug-tools/dragonfly-legacy	:bug:  Legacy dragonfly plugin for large-scale climate and urban heat island modeling
+35	ArhamOrioner/UHI-Analysis	Detecting and predicting Urban Heat Islands (UHIs) using satellite temperature and la
+30	Geraldine-Winston/Urban-Heat-Island-Mapping-using-deep-learning-on-remote-sensing-imagery.	Harnessing deep learning and satellite imagery, this project unveils Urban Heat Islan
+28	damienallen/urban-heat	Interactive urban heat island explorer
+25	Beckybams/Urban-Heat-Island-Mapping-using-AI	Urban-Heat-Island-Mapping-using-AI is a machine learning project that analyzes and pr
+23	Osondu-ifunanya/Urban-heat-island-detection-and-prediction-using-ML	This project models Urban Heat Island detection using synthetic data and machine lear
+23	ByMaxAnjos/LCZ4r	An R Package for Local Climate Zones and Urban Heat Island Analysis
+20	martibosch/lausanne-heat-islands	Simulation of urban heat islands in Lausanne with the InVEST urban cooling model
+17	isatyamks/UHI-Detector	Urban Heat Island Detection and Forecasting Model
+15	eeshsaxena/urban-heat-island-ahmedabad	Satellite-based Urban Heat Island analysis of Ahmedabad (2013-2024) using Landsat 8, 

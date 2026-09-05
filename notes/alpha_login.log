@@ -1,0 +1,8 @@
+Already logged in. Use `alpha logout` to sign out first.
+Opening browser for alphaXiv login...
+Auth URL: https://api.alphaxiv.org/auth/oauth2/authorize?client_id=pekjbdouZkhzGqxBIofwQDOnhEfbrxqv&redirect_uri=http%3A%2F%2F127.0.0.1%3A9876%2Fcallback&response_type=code&scope=openid+profile+email+offline_access&code_challenge=4bRaj7g_wuWt5Ka6vxPXKc-kch6mvxN4Tjfz3xs9SeY&code_challenge_method=S256&state=6f502330eedfee3d4e32d5f8dc0940e8
+If browser didn't open, visit:
+https://api.alphaxiv.org/auth/oauth2/authorize?client_id=pekjbdouZkhzGqxBIofwQDOnhEfbrxqv&redirect_uri=http%3A%2F%2F127.0.0.1%3A9876%2Fcallback&response_type=code&scope=openid+profile+email+offline_access&code_challenge=4bRaj7g_wuWt5Ka6vxPXKc-kch6mvxN4Tjfz3xs9SeY&code_challenge_method=S256&state=6f502330eedfee3d4e32d5f8dc0940e8
+
+Waiting for login...
+Logged in to alphaXiv as Sivasubramanian
