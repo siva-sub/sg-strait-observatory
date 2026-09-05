@@ -231,3 +231,45 @@ var s2Coast = ee.FeatureCollection("projects/sat-io/open-datasets/S2COAST-2023")
 // Filter to Singapore bbox, rasterize to 2400x1500, export as GeoTIFF
 ```
 This eliminates the chicken-and-egg problem (needing SH composites for the mask when SH is quota-blocked) and provides a more accurate coastline than the temporal median.
+
+## Iteration 16 — Multi-dataset composite (2026-09-05)
+
+**Datasets downloaded and processed:**
+
+| Dataset | Source | Resolution | Coverage | Use |
+|---|---|---|---|---|
+| S2Coast-2023 | Zenodo (open) | 10m HWL → rasterized to 37m grid | Singapore Strait bbox | **Land mask** (replaces temporal median; 49.7% land vs ~55% median) |
+| VIIRS VNL v2.1/v2.2 | EOG (auth required) | ~500m | 2015, 2018, 2021, 2023 | **Economic activity proxy** (port/refinery lights) |
+| S1 OData crops | CDSE OData (no processing units) | ~37m (multilooked) | 6 scenes 2016–2026 | Raw SAR for detector testing |
+
+**S2Coast land mask validation:**
+- Rasterized to project grid (2400×1500) from global shapefile (1.5 GB → 3.5 MB crop)
+- 49.7% land vs temporal-median ~55% (the median over-classified bright ships/infrastructure near shore)
+- Fixed accuracy: validated at RMSE 17.4m (vs our median approximation)
+- Immediately usable — solves the chicken-and-egg mask dependency
+
+**V4 trimmed CFAR with S2Coast mask (the headline optimization):**
+| Crop | v3.1 (uniform) | v4 (trimmed) | Improvement |
+|---|---|---|---|
+| 20160 | 551 | 1,289 | +134% |
+| 20170 | 565 | 1,342 | +138% |
+| 20170615 | 522 | 1,390 | +166% |
+| 20180 | 550 | 1,644 | +199% |
+| 20260 | 601 | 1,538 | +156% |
+| **mean** | **558** | **1,441** | **+159%** |
+
+Why: v3.1's threshold p90 was +0.8 dB near bright ships (ships raising local threshold → neighbors invisible); v4's trimmed stats cap at 6.7 dB max, finding those masked neighbors.
+
+**VNL nighttime lights temporal:**
+| Year | Total radiance | YoY | Lit pixels |
+|---|---|---|---|
+| 2015 | 299,978 | — | 14,884 |
+| 2018 | 336,490 | +12.2% | 15,522 |
+| 2021 | 340,042 | +1.1% | 16,079 |
+| 2023 | 345,413 | +1.6% | 15,245 |
+
+Brightest pixel = Jurong Island (petrochemical complex, 276–376 nW/cm²/sr across years). Growth decelerating from +12% (2015→18) to +1-2% (2018→23) — consistent with Singapore's mature economy.
+
+**ERA5 wind:** CDS API returning 500s (post-2024 migration auth change). BLOCKED — needs updated PAT format.
+
+**Disk: 71 GB free** (S2Coast shapefiles cleaned after rasterization; VNL globals deleted after cropping).

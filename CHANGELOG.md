@@ -123,3 +123,11 @@
 - Also found: DEA Coastlines (dossier methodology), WorldPop, SSTG, Global Shoreline Dataset.
 - Not available: VIIRS nighttime lights (insiders only), no AIS/shipping datasets.
 - Next: download S2Coast for Singapore bbox → rasterize to project grid → use as fixed land mask for v4 trimmed-CFAR detector.
+
+## 2026-09-05 (final+3) — Iteration 16: Multi-dataset composite
+
+- S2Coast-2023 downloaded from Zenodo (1.5 GB), rasterized to project grid as land mask (49.7% land, validated RMSE 17.4m). Replaces temporal-median mask dependency.
+- VIIRS VNL v2.1/v2.2 from EOG (auth: sivasub987): 4 years cropped (2015/2018/2021/2023). Total radiance growth: +12.2% (2015-18), +1.1% (2018-21), +1.6% (2021-23). Brightest = Jurong Island.
+- v4 trimmed CFAR tested with S2Coast mask on 5 OData crops: mean +159% more detections vs v3.1. Root cause confirmed: v3.1 threshold p90 = +0.8 dB near bright ships; v4 = -9.7 dB (stable).
+- ERA5 wind: BLOCKED (CDS API 500s, post-migration auth format change).
+- Technical notes: /vsigzip/ for streaming VNL decompression (avoids 11.6 GB tmp); VNL downloaded via EOG Keycloak auth (curl_cffi session); disk-flat VNL processing.
