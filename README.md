@@ -5,7 +5,7 @@
 A Python package (`pip install strait-observatory`) for detecting vessels from Sentinel-1 SAR
 and turning those detections into economic indicators. Works for any port with open-water
 anchorages. Validated on Singapore, where satellite-derived anchorage presence explains
-48% of bunker sales variance (R²=0.478, detrended, weather-robust, AIS-confirmed).
+53% of bunker sales variance (R²=0.528, n=57; detrended r=+0.46, weather-robust, AIS-confirmed).
 
 **Live demo (Singapore):** https://siva-sub.github.io/strait-observatory/
 **PyPI:** https://pypi.org/project/strait-observatory/
@@ -18,7 +18,7 @@ control needed, no trend-riding.
 
 | Model | R² | What it means |
 |---|---|---|
-| bunker ~ eOPL (satellite only) | **0.478** | Radar alone explains 48% |
+| bunker ~ eOPL (satellite only) | **0.528** | Radar alone explains 53% (n=57) |
 | bunker ~ eOPL + ERA5 wind | 0.495 | Weather adds almost nothing |
 | bunker ~ eOPL + wind + tanker arrivals | **0.700** | Practical nowcasting model |
 
