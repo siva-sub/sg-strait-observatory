@@ -20,7 +20,7 @@ from scipy import ndimage
 DATA = sorted(glob.glob("experiments/data/s1_vv_*.tif"))
 OUT = "experiments/results"
 ZONES = {"port_core": (103.68, 1.20, 104.02, 1.34),
-         "eastern_opl": (104.00, 1.08, 104.30, 1.24),
+         "eastern_opl": (104.00, 1.24, 104.35, 1.40),  # synced 2026-09-06: old box (1.08-1.24N) sat on Batam
          "western_opl": (103.58, 1.10, 103.78, 1.32)}
 K = 5.5; WIN = 64; MINP = 3; FLOOR_DB = -12.0; LAND_MED_DB = -12.0
 

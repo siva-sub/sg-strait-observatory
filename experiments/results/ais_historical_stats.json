@@ -1,0 +1,55 @@
+{
+  "source": "Mendeley 10.17632/r37vwd493d.1 (Singapore, Oct 2023)",
+  "n_records": 609975,
+  "zones": {
+    "eastern_opl": {
+      "unique_vessels": 4414,
+      "unique_vessels_daily_mean": 315.8,
+      "anchored_unique_status": 926,
+      "anchored_unique_daily_mean_status": 80.8,
+      "anchored_reports_status": 42617,
+      "anchored_tanker_reports_status": 29852,
+      "tanker_share_anchored_reports_pct": 70.0,
+      "tanker_share_anchored_reports_speed_pct": 71.8,
+      "type80_share_anchored_pct": 49.2
+    },
+    "port_core": {
+      "unique_vessels": 5282,
+      "unique_vessels_daily_mean": 640.2,
+      "anchored_unique_status": 2483,
+      "anchored_unique_daily_mean_status": 268.5,
+      "anchored_reports_status": 158617,
+      "anchored_tanker_reports_status": 106333,
+      "tanker_share_anchored_reports_pct": 67.0,
+      "tanker_share_anchored_reports_speed_pct": 66.2,
+      "type80_share_anchored_pct": 53.6
+    },
+    "western_opl": {
+      "unique_vessels": 4466,
+      "unique_vessels_daily_mean": 452.0,
+      "anchored_unique_status": 826,
+      "anchored_unique_daily_mean_status": 112.9,
+      "anchored_reports_status": 69957,
+      "anchored_tanker_reports_status": 67428,
+      "tanker_share_anchored_reports_pct": 96.4,
+      "tanker_share_anchored_reports_speed_pct": 77.8,
+      "type80_share_anchored_pct": 63.7
+    },
+    "aoi": {
+      "unique_vessels": 5754,
+      "unique_vessels_daily_mean": 856.6,
+      "anchored_unique_status": 3367,
+      "anchored_unique_daily_mean_status": 421.2,
+      "anchored_reports_status": 265792,
+      "anchored_tanker_reports_status": 197975,
+      "tanker_share_anchored_reports_pct": 74.5,
+      "tanker_share_anchored_reports_speed_pct": 69.1,
+      "type80_share_anchored_pct": 53.9
+    }
+  },
+  "definitions": {
+    "anchored": "NavigationalStatus == 1",
+    "anchored_speed_variant": "SOG < 0.5 kn",
+    "tanker": "ShipType in 80..89"
+  }
+}

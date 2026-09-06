@@ -1,0 +1,31 @@
+{
+  "n_months": 57,
+  "pearson_r": 0.7269,
+  "pearson_p": 1.5364536584624846e-10,
+  "spearman_rho": 0.7378,
+  "r_squared_full_sample": 0.5283,
+  "rolling": {
+    "window_observations": 24,
+    "n_windows": 34,
+    "min": 0.262,
+    "max": 0.7104,
+    "median": 0.5166,
+    "negative_windows": 0,
+    "critical_r_5pct": 0.4044,
+    "windows_below_critical": 13,
+    "latest_window_r": 0.6192,
+    "centers_first_last": [
+      "2021-08",
+      "2025-04"
+    ]
+  },
+  "covid_exclusion": {
+    "dropped": "2020, 2021",
+    "n": 41,
+    "pearson_r": 0.7592
+  },
+  "log_diff": {
+    "n": 56,
+    "pearson_r": 0.1752
+  }
+}

@@ -1,2 +1,4 @@
-month,eastern_opl,other,port_core,western_opl,total
-2023-10,27114.97037651262,57851.832290015984,151138.3383972966,39602.52495316999,275707.6660169952
+zone,events,unique_vessels,median_dwell_h,p25_h,p75_h,total_vessel_hours,tanker_events,tanker_unique,tanker_median_dwell_h,tanker_p25_h,tanker_p75_h,tanker_hours,tanker_events_gt12h,tanker_events_gt24h
+eastern_opl,1131,926,13.0,6.5,27.0,28825.0,651,470,18.0,6.0,41.5,21284.0,392,262
+port_core,3446,2276,14.0,7.5,34.5,95167.0,2105,997,18.5,7.5,45.0,69534.0,1330,901
+western_opl,1149,723,14.0,5.5,32.0,31364.0,1106,682,14.0,6.0,32.0,30483.0,608,361

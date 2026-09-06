@@ -155,3 +155,15 @@
 **Statistical additions prompted by review:** 95% CI band + outlier sensitivity (r=+0.78 excluding 4 |z|>2 months) on fig 2; Fisher-z CI + significance threshold + 13/34 below-threshold count on fig 4.
 
 **Process lesson (recorded for future figures):** pixel-level review by a fresh vision model catches what self-checks miss — my own "verified 0 collisions" claims were falsified twice (data-coords check missed rendered text extents; wrong latitude weighting). The only checks that held were post-render window-extent measurements and color-blob censuses on the saved PNG.
+
+## 2026-09-06 — Audit fixes applied (paper + code + package)
+
+Paper-code audit (outputs/strait-observatory-code-audit.md) found 5 blocking defects; all fixed:
+
+1. **Data hygiene:** 5 v4-detector OData crops quarantined from perscene_counts.csv (→ perscene_counts_v4_crops.csv). Scene counts restated: 243 v3.1 OK scenes, 236 in 2021–2026. The 243-vs-237 bookkeeping mystery is resolved. Re-aggregation now stable (max monthly diff 0.003).
+2. **Abstract:** "two-pass" dropped from v3.1 (it's single-pass μ+kσ; two-pass is v4). R² restated on declared samples: 0.528 satellite-only (n=57), not 0.478 (which was the n=54 wind-joined subsample). AIS restated from committed script: 4,414 unique vessels, 70.0% tankers (71.8% speed definition), type-80 49.2% — replacing unreproducible 4,240/77%/55%.
+3. **New committed scripts (were ledger-only):** ais_historical_analysis.py, ais_dwell.py (24h-gap event split; median tanker dwell 18.0h, 21,284 tanker-hours; definition-sensitivity 10–28h stated), nowcast_oos.py (skill +0.006 alone, +0.137 combined with persistence; old RMSEs 0.104/0.120 withdrawn), robustness_battery.py (34 windows, 13 below r=0.404, latest 0.62). Both previously-cited-but-missing JSONs now exist.
+4. **Corrections:** F1 0.77→0.61 (formula stated), rolling "latest 0.64"→0.62, Mendeley DOI added, S2Coast attribution corrected (headline series = temporal median), 2,145-vessel pool flagged as unscripted.
+5. **Package 0.2.1 published:** version skew fixed (__version__/pyproject/test now agree, test cross-checks both), dead odata import → explicit NotImplementedError, README quickstart rewritten against the real API (AISMatch, Zones.custom), architecture tree matches files. 36 tests pass. https://pypi.org/project/strait-observatory/0.2.1/
+
+Verification: 16-point sweep — every paper number now matches its artifact exactly (r=0.7269, R²=0.528, 4414, 70.0%, 18.0h, 21284, 34/13/0.62, +0.006/+0.137, 243/236, F1 0.613).

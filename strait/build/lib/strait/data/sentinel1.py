@@ -204,6 +204,15 @@ def prepare_sentinel1(
         except FileNotFoundError:
             logger.info("No local cache found. Falling back to CDSE.")
 
-    # CDSE path (requires credentials and quota)
-    from .odata import download_and_process
-    return download_and_process(bounds, time_range, cache_dir, shape)
+    # CDSE path (requires credentials and quota).
+    # NOTE: the OData downloader is not bundled in v0.2.x — remote download is
+    # not supported yet. Point users at the observatory scripts instead of
+    # crashing with an opaque ModuleNotFoundError.
+    raise NotImplementedError(
+        "No local scene cache found and the CDSE downloader is not bundled "
+        "in strait-observatory 0.2.x. Either (a) create a local cache with "
+        "create_cache_from_directory(...) from pre-processed Sentinel-1 "
+        "GeoTIFFs (see the observatory repo's experiments/ scripts for "
+        "downloading via CDSE), or (b) wait for download support in a "
+        "future release."
+    )

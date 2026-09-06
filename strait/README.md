@@ -86,34 +86,28 @@ detections = cutout.detect(method="trimmed_cfar")
 zones = strait.Zones.singapore_strait()
 monthly = cutout.aggregate(detections, zones, freq="MS")
 
-# 5. Validate against AIS (optional)
-ais = strait.AIS(source="aisstream", api_key="...")
-match = ais.match(detections, threshold_m=500)
+# 5. Validate against AIS (optional; pass any list of {lat, lon} dicts,
+#    e.g. a live AISStream.io snapshot — see experiments/ais_capture.py)
+from strait import AISMatch
+match = AISMatch(threshold_m=500).load("ais_snapshot.json").match(detections)
 
-# 6. Correlate with official statistics (optional)
-stats = strait.Stats.from_datagov_sg()
-results = stats.correlate(monthly, target="bunker_sales")
+# Correlation with official statistics is not part of the package yet;
+# see experiments/econ_join.py in the observatory repo for the join.
 ```
 
 ## Architecture (inspired by [atlite](https://github.com/PyPSA/atlite))
 
 ```
 strait/
-├── __init__.py          # exports Cutout, detect, aggregate, AIS, Stats
+├── __init__.py          # exports Cutout, Zones, AISMatch, detect, aggregate
 ├── cutout.py            # Cutout class (spatial/temporal abstraction)
 ├── detect/
-│   ├── __init__.py      # detect() dispatcher
-│   ├── cfar.py          # classic CFAR (v3.1)
-│   ├── trimmed_cfar.py  # trimmed CFAR (v4, from SAR literature)
-│   └── land_mask.py     # coastline-based land mask
+│   └── __init__.py      # detect() dispatcher + presets + trimmed CFAR
 ├── data/
 │   ├── __init__.py      # data source registry
-│   ├── sentinel1.py     # Sentinel-1 via CDSE (Sentinel Hub + OData)
-│   ├── ais.py           # AIS from multiple sources
-│   └── official.py      # Official statistics (data.gov.sg, etc.)
+│   └── sentinel1.py     # local scene cache (CDSE download: not bundled yet)
 ├── aggregate.py         # zone × time aggregation
-├── validate.py          # SAR-AIS matching, precision/recall
-├── stats.py             # econometric correlation
+├── validate.py          # SAR-AIS matching (KD-tree, precision/recall)
 └── zones.py             # built-in zone definitions
 ```
 
@@ -124,7 +118,7 @@ strait/
 zones = strait.Zones.singapore_strait()
 
 # Define your own
-zones = strait.Zones({
+zones = strait.Zones.custom({
     "my_anchorage": (104.0, 1.24, 104.35, 1.40),  # lon_min, lat_min, lon_max, lat_max
     "port_area": (103.68, 1.20, 104.02, 1.34),
 })

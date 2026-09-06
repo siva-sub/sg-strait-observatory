@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "strait-observatory"
-version = "0.2.0"
+version = "0.2.1"
 description = "Satellite vessel detection & port activity monitoring from Sentinel-1 SAR"
 readme = "README.md"
 license = {text = "MIT"}

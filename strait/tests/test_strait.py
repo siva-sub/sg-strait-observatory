@@ -231,4 +231,8 @@ class TestCutout:
 # ── Version ──
 
 def test_version():
-    assert strait.__version__ == "0.1.0"
+    assert strait.__version__ == __import__("strait").__version__  # self-consistency
+    import importlib.metadata, pathlib
+    pyproject = pathlib.Path(__file__).resolve().parents[1] / "pyproject.toml"
+    declared = next(l.split('"')[1] for l in pyproject.read_text().splitlines() if l.startswith('version ='))
+    assert strait.__version__ == declared, f"__version__ {strait.__version__} != pyproject {declared}"

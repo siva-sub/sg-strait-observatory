@@ -1,0 +1,22 @@
+{
+  "train_window": [
+    "2021-09",
+    "2023-01"
+  ],
+  "n_train": 17,
+  "test_window": [
+    "2024-01",
+    "2026-03"
+  ],
+  "n_test": 27,
+  "target": "bunker sales, z-scored on train",
+  "rmse_persistence": 1.435,
+  "rmse_satellite_ols": 1.426,
+  "rmse_combined": 1.239,
+  "skill_satellite_vs_persistence": 0.006,
+  "skill_combined_vs_persistence": 0.137,
+  "oos_r_satellite": 0.59,
+  "oos_p_satellite": 0.001,
+  "direction_share_satellite": 0.423,
+  "direction_share_persistence": 0.32
+}
